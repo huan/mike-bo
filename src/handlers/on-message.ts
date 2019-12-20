@@ -14,8 +14,8 @@ export default async function onMessage (
 }
 
 async function dingDong (
-  this: Wechaty,
-  message: Message,
+  this:     Wechaty,
+  message:  Message,
 ) {
   log.info('on-message', 'dingDong()')
 
@@ -36,9 +36,9 @@ async function dingDong (
       const topic = text.replace(/^findRoom /i, '')
       const room = await this.Room.find({ topic })
       if (room) {
-        await message.say(`room id: ${room.id}`)
+        await message.say(`room id: "${room.id}"`)
       } else {
-        await message.say(`room not found for ${topic}`)
+        await message.say(`room not found for "${topic}"`)
       }
     }
   }
