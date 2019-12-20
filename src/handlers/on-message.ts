@@ -34,8 +34,12 @@ async function dingDong (
       await message.say('dong')
     } else if (text.match(/^findRoom /i)) {
       const topic = text.replace(/^findRoom /i, '')
-      const roomId = await this.Room.find({ topic })
-      await message.say(`room id: ${roomId}`)
+      const room = await this.Room.find({ topic })
+      if (room) {
+        await message.say(`room id: ${room.id}`)
+      } else {
+        await message.say(`room not found for ${topic}`)
+      }
     }
   }
 
