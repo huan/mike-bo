@@ -32,6 +32,10 @@ async function dingDong (
   if (type === Message.Type.Text) {
     if (text.toLowerCase() === 'ding') {
       await message.say('dong')
+    } else if (text.match(/^findRoom /i)) {
+      const topic = text.replace(/^findRoom /i, '')
+      const roomId = await this.Room.find({ topic })
+      await message.say(`room id: ${roomId}`)
     }
   }
 
