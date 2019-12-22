@@ -20,19 +20,17 @@ async function dingDong (
 ) {
   log.info('on-message', 'dingDong()')
 
-  const text = message.text()
+  let text = message.text()
   const type = message.type()
   const room = message.room()
   // const from = message.from()
-  const mentionList = await message.mention()
-  const self = this.self()
+  const mentionSelf = await message.mentionSelf()
 
-  const notMe = (contact: Contact) => contact.id === self.id
-
-  if (room && mentionList.every(notMe)) {
+  if (room && !mentionSelf) {
     return
   } else {
-    log.info('on-message', 'dingDong() message in room and mentioned me')
+    log.info('on-message', 'dingDong() message in room and mentioned self')
+    text = await message.mentionText()
   }
 
   if (type === Message.Type.Text) {
