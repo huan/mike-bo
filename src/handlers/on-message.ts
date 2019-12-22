@@ -36,7 +36,7 @@ async function dingDong (
   }
 
   if (type === Message.Type.Text) {
-    if (text.toLowerCase() === '/#ding') {
+    if (text.match(/^#ding$/i)) {
       await message.say('dong')
     } else if (text.match(/^#findRoom /i)) {
       const topic = text.replace(/^#findRoom /i, '')
