@@ -34,12 +34,20 @@ async function dingDong (
       await message.say('dong')
     } else if (text.match(/^findRoom /i)) {
       const topic = text.replace(/^findRoom /i, '')
+      log.info('on-message', 'dingDong() findRoom(%s)', topic)
+
       const room = await this.Room.find({ topic })
       if (room) {
         await message.say(`room id: "${room.id}"`)
       } else {
         await message.say(`room not found for "${topic}"`)
       }
+    } else if (text.match(/^card /i)) {
+      const url = text.replace(/^card /i, '')
+      log.info('on-message', 'dingDong() card(%s)', url)
+
+      const urlLink = await this.UrlLink.create(url)
+      await message.say(urlLink)
     }
   }
 
