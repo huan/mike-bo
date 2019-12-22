@@ -25,11 +25,14 @@ async function dingDong (
   // const from = message.from()
   const mentionSelf = await message.mentionSelf()
 
-  if (room && !mentionSelf) {
-    return
-  } else {
-    log.info('on-message', 'dingDong() message in room and mentioned self')
-    text = await message.mentionText()
+  if (room) {
+    if (mentionSelf) {
+      log.info('on-message', 'dingDong() message in room and mentioned self')
+      text = await message.mentionText()
+      console.info('mentionText', text)
+    } else {
+      return
+    }
   }
 
   if (type === Message.Type.Text) {
