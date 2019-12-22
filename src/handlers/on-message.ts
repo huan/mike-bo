@@ -2,7 +2,6 @@ import {
   log,
   Message,
   Wechaty,
-  Contact,
 }             from 'wechaty'
 
 export default async function onMessage (
