@@ -2,6 +2,7 @@ import {
   log,
   Message,
   Wechaty,
+  Contact,
 }             from 'wechaty'
 
 export default async function onMessage (
@@ -23,17 +24,22 @@ async function dingDong (
   const type = message.type()
   const room = message.room()
   // const from = message.from()
-  // const mentionLisrt = await message.mention()
+  const mentionList = await message.mention()
+  const self = this.self()
 
-  if (room) {
+  const notMe = (contact: Contact) => contact.id === self.id
+
+  if (room && mentionList.every(notMe)) {
     return
+  } else {
+    log.info('on-message', 'dingDong() message in room and mentioned me')
   }
 
   if (type === Message.Type.Text) {
-    if (text.toLowerCase() === 'ding') {
+    if (text.toLowerCase() === '/#ding') {
       await message.say('dong')
-    } else if (text.match(/^findRoom /i)) {
-      const topic = text.replace(/^findRoom /i, '')
+    } else if (text.match(/^#findRoom /i)) {
+      const topic = text.replace(/^#findRoom /i, '')
       log.info('on-message', 'dingDong() findRoom(%s)', topic)
 
       const room = await this.Room.find({ topic })
@@ -42,8 +48,8 @@ async function dingDong (
       } else {
         await message.say(`room not found for "${topic}"`)
       }
-    } else if (text.match(/^card /i)) {
-      const url = text.replace(/^card /i, '')
+    } else if (text.match(/^#card /i)) {
+      const url = text.replace(/^#card /i, '')
       log.info('on-message', 'dingDong() card(%s)', url)
 
       const urlLink = await this.UrlLink.create(url)
