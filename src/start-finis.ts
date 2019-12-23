@@ -40,8 +40,8 @@ finis(async (code, signal) => {
   }
 
   if (FINIS_QUITING) {
-    log.warn('Finis', 'finis(%s, %s) called again when quiting... NOP', code, signal)
-    return
+    log.warn('Finis', 'finis(%s, %s) called again when quiting... exiting...', code, signal)
+    process.exit(code)
   }
 
   FINIS_QUITING = true
