@@ -54,6 +54,18 @@ async function dingDong (
 
       const urlLink = await this.UrlLink.create(url)
       await message.say(urlLink)
+    } else if (text.match(/^#roomQrcode /i)) {
+      const topic = text.replace(/^#roomQrcode /i, '')
+      log.info('on-message', 'dingDong() roomQrcode(%s)', topic)
+
+      const room = await this.Room.find({ topic })
+      if (room) {
+        const value = 'test' // await room.qrcode()
+        const qrcodePng = await this.qrcodePng(value)
+        await message.say(qrcodePng)
+      } else {
+        await message.say(`room not found for "${topic}"`)
+      }
     }
   }
 
