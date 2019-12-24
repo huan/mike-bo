@@ -3,6 +3,7 @@ import {
   Message,
   Wechaty,
 }             from 'wechaty'
+import { chatops } from '../chatops'
 
 export default async function onMessage (
   this    : Wechaty,
@@ -10,7 +11,18 @@ export default async function onMessage (
 ): Promise<void> {
   log.info('on-message', 'onMessage(%s)', message)
 
+  const room = message.room()
+  if (room) {
+    const mentionSelf = await message.mentionSelf()
+    if (mentionSelf) {
+      await chatops(this, `${message}`)
+    }
+  } else {  // direct message
+    await chatops(this, `${message}`)
+  }
+
   await dingDong.call(this, message)
+
 }
 
 async function dingDong (
