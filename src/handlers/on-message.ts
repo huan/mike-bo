@@ -3,7 +3,10 @@ import {
   Message,
   Wechaty,
 }             from 'wechaty'
-import { chatops } from '../chatops'
+import {
+  chatops,
+  CHATOPS_ROOM_ID,
+} from '../chatops'
 
 export default async function onMessage (
   this    : Wechaty,
@@ -79,6 +82,11 @@ async function dingDong (
         await message.say(`room not found for "${topic}"`)
       }
     }
-  }
+  } else if (text.match(/^#announce /i)) {
+    const announcement = text.replace(/^#announce /i, '')
+    log.info('on-message', 'dingDong() announce(%s)', announcement)
 
+    const room = this.Room.load(CHATOPS_ROOM_ID)
+    await room.announce(announcement)
+  }
 }

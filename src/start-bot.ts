@@ -28,4 +28,5 @@ export async function startBot (wechaty: Wechaty): Promise<void> {
 
   const ONE_HOUR = 60 * 60 * 1000
   setInterval(heartbeat, ONE_HOUR)
+  await heartbeat()
 }
