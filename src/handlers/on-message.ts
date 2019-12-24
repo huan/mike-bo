@@ -81,12 +81,13 @@ async function dingDong (
       } else {
         await message.say(`room not found for "${topic}"`)
       }
-    }
-  } else if (text.match(/^#announce /i)) {
-    const announcement = text.replace(/^#announce /i, '')
-    log.info('on-message', 'dingDong() announce(%s)', announcement)
+    } else if (text.match(/^#announce /i)) {
+      const announcement = text.replace(/^#announce /i, '')
+      log.info('on-message', 'dingDong() announce(%s)', announcement)
 
-    const room = this.Room.load(CHATOPS_ROOM_ID)
-    await room.announce(announcement)
+      const room = this.Room.load(CHATOPS_ROOM_ID)
+      await room.announce(announcement)
+    }
+
   }
 }
