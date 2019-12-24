@@ -18,6 +18,12 @@ export async function chatops (
 ): Promise<void> {
   log.info('chatops', 'chatops(%s)', text)
 
+  const online = bot.logonoff()
+  if (!online) {
+    log.error('chatops', 'chatops() bot offline')
+    return
+  }
+
   if (!room) {
     let tryRoom = await bot.Room.find({ topic: CHATOPS_ROOM_TOPIC })
     if (!tryRoom) {
