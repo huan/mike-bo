@@ -20,8 +20,9 @@ export async function startWeb (bot: Wechaty): Promise<void> {
   })
 
   const handler = () => {
+    let html
     if (qrcodeValue) {
-      const html = [
+      html = [
         `<h1>Mike BO v${VERSION}</h1>`,
         'Scan QR Code: <br />',
         qrcodeValue + '<br />',
@@ -32,12 +33,16 @@ export async function startWeb (bot: Wechaty): Promise<void> {
         encodeURIComponent(qrcodeValue),
         '">',
       ].join('')
-      return html
     } else if (userName) {
-      return `Mike BO v${VERSION} User ${userName} logined`
+      html = `Mike BO v${VERSION} User ${userName} logined`
     } else {
-      return `Mike BO v${VERSION} Hello, come back later please.`
+      html = `Mike BO v${VERSION} Hello, come back later please.`
     }
+    return [
+      html,
+      '<hr />',
+      '<a href="https://dashboard.heroku.com/apps/mike-bo/logs" target="_blank">Logs</a>',
+    ].join('')
   }
 
   server.route({
