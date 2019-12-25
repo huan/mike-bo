@@ -34,8 +34,9 @@
     "@types/read-pkg-up": "^6.0.0",
     "brolog": "^1.6.5",
     "finis": "^0.4.3",
+    "moment": "^2.24.0",
     "read-pkg-up": "^7.0.1",
-    "wechaty": "^0.29.19",
+    "wechaty": "^0.29.22",
     "wechaty-puppet-padplus": "^0.1.3"
   },
   "devDependencies": {

@@ -1,12 +1,17 @@
+import moment from 'moment'
+
 import {
   log,
   Message,
   Wechaty,
 }             from 'wechaty'
+
 import {
   chatops,
   CHATOPS_ROOM_ID,
 } from '../chatops'
+
+const BORN_TIME = Date.now()
 
 export default async function onMessage (
   this    : Wechaty,
@@ -14,23 +19,80 @@ export default async function onMessage (
 ): Promise<void> {
   log.info('on-message', 'onMessage(%s)', message)
 
-  const room = message.room()
-  if (room) {
-    const mentionSelf = await message.mentionSelf()
-    if (mentionSelf) {
-      await chatops(this, `${message}`)
-    }
-  } else {  // direct message
-    await chatops(this, `${message}`)
+  await dingDong(this, message)
+
+  await chatopsDirectMessage(this, message)
+  await chatopsRoomMentionMessage(this, message)
+  await ctpStatus(this, message)
+}
+
+async function ctpStatus (
+  wechaty: Wechaty,
+  message: Message,
+): Promise<void> {
+  if (message.self()) {
+    return
   }
 
-  await dingDong.call(this, message)
+  const room = message.room()
+  if (!room) {
+    return
+  }
 
+  // ChatOps - CTP Status
+  const CTP_STATUS_ROOM_ID = '17962906510@chatroom'
+  if (room.id !== CTP_STATUS_ROOM_ID) {
+    return
+  }
+
+  let text = await message.mentionText()
+  let reply
+  if (text.match(/^#ding$/i)) {
+    reply = 'dong'
+  } else if (text.match(/^#uptime$/i)) {
+    const time = moment(BORN_TIME).fromNow()
+    reply = `I'm online ${time}`
+  } else {
+    reply = 'unknown CTP command'
+  }
+
+  await message.say(reply)
+  await wechaty.sleep(1)
+}
+
+async function chatopsDirectMessage (
+  wechaty: Wechaty,
+  message: Message,
+): Promise<void> {
+  const room = message.room()
+  if (room) {
+    return
+  }
+
+  // direct message
+  await chatops(wechaty, `${message}`)
+}
+
+async function chatopsRoomMentionMessage (
+  wechaty: Wechaty,
+  message: Message,
+): Promise<void> {
+  const room = message.room()
+  if (!room) {
+    return
+  }
+
+  const mentionSelf = await message.mentionSelf()
+  if (!mentionSelf) {
+    return
+  }
+
+  await chatops(wechaty, `${message}`)
 }
 
 async function dingDong (
-  this:     Wechaty,
-  message:  Message,
+  wechaty: Wechaty,
+  message: Message,
 ) {
   log.info('on-message', 'dingDong()')
 
@@ -41,13 +103,13 @@ async function dingDong (
   const mentionSelf = await message.mentionSelf()
 
   if (room) {
-    if (mentionSelf) {
-      log.info('on-message', 'dingDong() message in room and mentioned self')
-      text = await message.mentionText()
-      console.info('mentionText', text)
-    } else {
+    if (!mentionSelf) {
       return
     }
+
+    log.info('on-message', 'dingDong() message in room and mentioned self')
+    text = await message.mentionText()
+    console.info('mentionText', text)
   }
 
   if (type === Message.Type.Text) {
@@ -57,7 +119,7 @@ async function dingDong (
       const topic = text.replace(/^#findRoom /i, '')
       log.info('on-message', 'dingDong() findRoom(%s)', topic)
 
-      const room = await this.Room.find({ topic })
+      const room = await wechaty.Room.find({ topic })
       if (room) {
         await message.say(`room id: "${room.id}"`)
       } else {
@@ -67,16 +129,16 @@ async function dingDong (
       const url = text.replace(/^#card /i, '')
       log.info('on-message', 'dingDong() card(%s)', url)
 
-      const urlLink = await this.UrlLink.create(url)
+      const urlLink = await wechaty.UrlLink.create(url)
       await message.say(urlLink)
     } else if (text.match(/^#roomQrcode /i)) {
       const topic = text.replace(/^#roomQrcode /i, '')
       log.info('on-message', 'dingDong() roomQrcode(%s)', topic)
 
-      const room = await this.Room.find({ topic })
+      const room = await wechaty.Room.find({ topic })
       if (room) {
         const value = 'test' // await room.qrcode()
-        const qrcodePng = await this.qrcodePng(value)
+        const qrcodePng = await wechaty.qrcodePng(value)
         await message.say(qrcodePng)
       } else {
         await message.say(`room not found for "${topic}"`)
@@ -85,7 +147,7 @@ async function dingDong (
       const announcement = text.replace(/^#announce /i, '')
       log.info('on-message', 'dingDong() announce(%s)', announcement)
 
-      const room = this.Room.load(CHATOPS_ROOM_ID)
+      const room = wechaty.Room.load(CHATOPS_ROOM_ID)
       await room.announce(announcement)
     }
 
