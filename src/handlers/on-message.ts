@@ -131,6 +131,16 @@ async function dingDong (
       } else {
         await message.say(`room not found for "${topic}"`)
       }
+    } else if (text.match(/^#findContact /i)) {
+      const name = text.replace(/^#findContact /i, '')
+      log.info('on-message', 'dingDong() findContact(%s)', name)
+
+      const contact = await wechaty.Contact.find({ name })
+      if (contact) {
+        await message.say(`contact id: "${contact.id}"`)
+      } else {
+        await message.say(`contACT not found for "${name}"`)
+      }
     } else if (text.match(/^#card /i)) {
       const url = text.replace(/^#card /i, '')
       log.info('on-message', 'dingDong() card(%s)', url)
