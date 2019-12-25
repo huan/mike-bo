@@ -70,7 +70,7 @@ async function chatopsDirectMessage (
   }
 
   // direct message
-  await chatops(wechaty, `${message}`)
+  await chatops(wechaty, message)
 }
 
 async function chatopsRoomMentionMessage (
