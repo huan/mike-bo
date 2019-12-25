@@ -47,9 +47,7 @@ export async function chatops (
         await room.say(urlLink)
         break
       default:
-        const typeName = Message.Type[
-          textOrMessage.type()
-        ]
+        const typeName = Message.Type[textOrMessage.type()]
         await room.say(`message type: ${typeName}`)
         break
     }
