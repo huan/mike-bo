@@ -69,4 +69,8 @@ export class WTmp {
     throw new Error('no entry found')
   }
 
+  public uptime (): number {
+    return this.bornTime
+  }
+
 }
