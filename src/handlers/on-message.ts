@@ -65,9 +65,9 @@ async function ctpStatus (
     const list = wtmp.list()
     reply = ''
     for (const entry of list) {
-      const loginText = moment(entry.login).format('MMMM Do HH:mm')
-      const logoutText = moment(entry.logout || Date.now()).format('MMMM Do HH:mm')
-      reply += `${entry.name}\t${loginText}\t${logoutText}\n`
+      const loginText = moment(entry.login).format('MMM Do HH:mm')
+      const logoutText = moment(entry.logout || Date.now()).format('MMM Do HH:mm')
+      reply += `\n${entry.name}\n${loginText}\n${logoutText}\n`
     }
   } else {
     reply = 'unknown CTP command'
