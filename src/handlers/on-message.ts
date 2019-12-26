@@ -11,7 +11,7 @@ import {
   CHATOPS_ROOM_ID,
 } from '../chatops'
 
-const BORN_TIME = Date.now()
+import { WTmp } from '../wtmp'
 
 export default async function onMessage (
   this    : Wechaty,
@@ -56,8 +56,19 @@ async function ctpStatus (
   if (cmd.match(/^ding$/i)) {
     reply = 'dong'
   } else if (cmd.match(/^uptime$/i)) {
-    const time = moment(BORN_TIME).fromNow()
-    reply = `I'm online ${time}`
+    const wtmp = WTmp.instance()
+    const first = wtmp.first()
+    const time = moment(first.login).fromNow()
+    reply = `I'm online since ${time}`
+  } else if (cmd.match(/^last$/i)) {
+    const wtmp = WTmp.instance()
+    const list = wtmp.list()
+    reply = ''
+    for (const entry of list) {
+      const loginText = moment(entry.login).format('MMMM Do HH:mm')
+      const logoutText = moment(entry.logout || Date.now()).format('MMMM Do HH:mm')
+      reply += `${entry.name}\t${loginText}\t${logoutText}\n`
+    }
   } else {
     reply = 'unknown CTP command'
   }
