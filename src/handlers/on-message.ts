@@ -116,8 +116,12 @@ async function dingDong (
   let text = message.text()
   const type = message.type()
   const room = message.room()
-  // const from = message.from()
+  const from = message.from()
   const mentionSelf = await message.mentionSelf()
+
+  if (!from) {
+    return
+  }
 
   if (room) {
     if (!mentionSelf) {
@@ -176,7 +180,71 @@ async function dingDong (
 
       const room = wechaty.Room.load(CHATOPS_ROOM_ID)
       await room.announce(announcement)
+    } else if (text.match(/^#translate /i)) {
+      const sentence = text.replace(/^#translate /i, '')
+      log.info('on-message', 'dingDong() translate(%s)', sentence)
+
+      try {
+        const translated = await ctpTranslate(wechaty, sentence)
+        const output = `translate output: "${translated}"`
+
+        if (room) {
+          await message.say(output, from)
+        } else {
+          await message.say(output)
+        }
+
+      } catch (e) {
+        await message.say(`${e}`)
+      }
     }
 
   }
+}
+
+async function ctpTranslate (
+  wechaty: Wechaty,
+  text: string,
+): Promise<string> {
+
+  // Chat Transport Protocol - CTP
+  const CTP_TRANSLATE_ROOM_ID = '19661094471@chatroom'
+  const CTP_TRANSLATE_CONTACT_ID = 'wxid_sxrxy0q048ad12'
+
+  const room      = wechaty.Room.load(CTP_TRANSLATE_ROOM_ID)
+  const ctpMaster = wechaty.Contact.load(CTP_TRANSLATE_CONTACT_ID)
+
+  return new Promise(async (resolve, reject) => {
+
+    const onCtpMessage = async (message: Message) => {
+      const from = message.from()
+      if (!from) {
+        return
+      }
+
+      if (from.id !== ctpMaster.id) {
+        return
+      }
+
+      // const mentionSelf = await message.mentionSelf()
+      // if (!mentionSelf) {
+      //   return
+      // }
+
+      room.removeListener('message', onCtpMessage)
+
+      const mentionText = await message.mentionText()
+      resolve(mentionText)
+    }
+
+    const timeoutFn = () => {
+      room.removeListener('message', onCtpMessage)
+      reject(new Error('timeout'))
+    }
+
+    room.addListener('message', onCtpMessage)
+    await room.say(text, ctpMaster)
+    setTimeout(timeoutFn, 10 * 1000)
+
+  })
 }
