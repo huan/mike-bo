@@ -206,17 +206,23 @@ async function ctpTranslate (
   wechaty: Wechaty,
   text: string,
 ): Promise<string> {
+  log.verbose('on-message', 'ctpTranslate(%s)', text)
 
   // Chat Transport Protocol - CTP
-  const CTP_TRANSLATE_ROOM_ID = '19661094471@chatroom'
-  const CTP_TRANSLATE_CONTACT_ID = 'wxid_sxrxy0q048ad12'
+  const CTP_TRANSLATE_ROOM_ID     = '19661094471@chatroom'
+  const CTP_TRANSLATE_CONTACT_ID  = 'wxid_sxrxy0q048ad12'
 
   const room      = wechaty.Room.load(CTP_TRANSLATE_ROOM_ID)
   const ctpMaster = wechaty.Contact.load(CTP_TRANSLATE_CONTACT_ID)
 
+  await room.ready()
+  await ctpMaster.ready()
+
   return new Promise(async (resolve, reject) => {
 
     const onCtpMessage = async (message: Message) => {
+      log.verbose('on-message', 'ctpTranslate() onCtpMessage(%s)', message)
+
       const from = message.from()
       if (!from) {
         return
@@ -238,13 +244,14 @@ async function ctpTranslate (
     }
 
     const timeoutFn = () => {
+      log.verbose('on-message', 'ctpTranslate() timeout')
+
       room.removeListener('message', onCtpMessage)
       reject(new Error('timeout'))
     }
 
     room.addListener('message', onCtpMessage)
     await room.say(text, ctpMaster)
-    setTimeout(timeoutFn, 10 * 1000)
-
+    setTimeout(timeoutFn, 15 * 1000)
   })
 }
