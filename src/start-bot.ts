@@ -1,12 +1,13 @@
 import {
-  Wechaty, Contact,
+  Wechaty,
+  Contact,
 }                   from 'wechaty'
 
 import {
   log,
-}               from './config'
-import { chatops } from './chatops'
-import { WTmp } from './wtmp'
+}                  from './config'
+import { Chatops }  from './chatops'
+import { Wtmp }     from './wtmp'
 
 export async function startBot (wechaty: Wechaty): Promise<void> {
   log.verbose('startBot', 'startBot(%s)', wechaty)
@@ -24,15 +25,15 @@ export async function startBot (wechaty: Wechaty): Promise<void> {
     .on('room-leave',   './handlers/on-room-leave')
 
   const heartbeat = async () => {
-    await chatops(wechaty, `I'm alive!`)
+    await Chatops.instance().heartbeat(`I'm alive!`)
   }
   const ONE_HOUR = 60 * 60 * 1000
   setInterval(heartbeat, ONE_HOUR)
 
-  const wtmp = WTmp.instance()
-  const loginWTmp = (user: Contact) => wtmp.login(user.name())
-  const logoutWTmp = (user: Contact) => wtmp.logout(user.name())
-  wechaty.on('login', loginWTmp)
-  wechaty.on('logout', logoutWTmp)
+  const wtmp = Wtmp.instance()
+  const loginWtmp = (user: Contact) => wtmp.login(user.name())
+  const logoutWtmp = (user: Contact) => wtmp.logout(user.name())
+  wechaty.on('login', loginWtmp)
+  wechaty.on('logout', logoutWtmp)
 
 }

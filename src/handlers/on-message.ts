@@ -7,11 +7,10 @@ import {
 }             from 'wechaty'
 
 import {
-  chatops,
-  CHATOPS_ROOM_ID,
-} from '../chatops'
+  Chatops,
+}           from '../chatops'
 
-import { WTmp } from '../wtmp'
+import { Wtmp } from '../wtmp'
 
 export default async function onMessage (
   this    : Wechaty,
@@ -21,8 +20,8 @@ export default async function onMessage (
 
   await dingDong(this, message)
 
-  await chatopsDirectMessage(this, message)
-  await chatopsRoomMentionMessage(this, message)
+  await chatopsDirectMessage(message)
+  await chatopsRoomMentionMessage(message)
   await ctpStatus(this, message)
 }
 
@@ -56,12 +55,12 @@ async function ctpStatus (
   if (cmd.match(/^ding$/i)) {
     reply = 'dong'
   } else if (cmd.match(/^uptime$/i)) {
-    const wtmp = WTmp.instance()
+    const wtmp = Wtmp.instance()
     const first = wtmp.first()
     const time = moment(first.login).fromNow()
     reply = `I'm online since ${time}`
   } else if (cmd.match(/^last$/i)) {
-    const wtmp = WTmp.instance()
+    const wtmp = Wtmp.instance()
     const list = wtmp.list()
     reply = ''
     for (const entry of list) {
@@ -78,7 +77,6 @@ async function ctpStatus (
 }
 
 async function chatopsDirectMessage (
-  wechaty: Wechaty,
   message: Message,
 ): Promise<void> {
   const room = message.room()
@@ -87,11 +85,10 @@ async function chatopsDirectMessage (
   }
 
   // direct message
-  await chatops(wechaty, message)
+  await Chatops.instance().say(message)
 }
 
 async function chatopsRoomMentionMessage (
-  wechaty: Wechaty,
   message: Message,
 ): Promise<void> {
   const room = message.room()
@@ -104,7 +101,7 @@ async function chatopsRoomMentionMessage (
     return
   }
 
-  await chatops(wechaty, `${message}`)
+  await Chatops.instance().say(message)
 }
 
 async function dingDong (
@@ -178,7 +175,7 @@ async function dingDong (
       const announcement = text.replace(/^#announce /i, '')
       log.info('on-message', 'dingDong() announce(%s)', announcement)
 
-      const room = wechaty.Room.load(CHATOPS_ROOM_ID)
+      const room = wechaty.Room.load('5611663299@chatroom')
       await room.announce(announcement)
     } else if (text.match(/^#translate /i)) {
       const sentence = text.replace(/^#translate /i, '')
@@ -208,9 +205,8 @@ async function ctpTranslate (
 ): Promise<string> {
   log.verbose('on-message', 'ctpTranslate(%s)', text)
 
-  // Chat Transport Protocol - CTP
-  const CTP_TRANSLATE_ROOM_ID     = '19661094471@chatroom'
-  const CTP_TRANSLATE_CONTACT_ID  = 'wxid_sxrxy0q048ad12'
+  const CTP_TRANSLATE_ROOM_ID     = '19661094471@chatroom'  // Chat Transport Protocol - CTP
+  const CTP_TRANSLATE_CONTACT_ID  = 'wxid_sxrxy0q048ad12'   // 彩云小译9号
 
   const room      = wechaty.Room.load(CTP_TRANSLATE_ROOM_ID)
   const ctpMaster = wechaty.Contact.load(CTP_TRANSLATE_CONTACT_ID)

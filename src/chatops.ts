@@ -1,5 +1,4 @@
 import {
-  Room,
   Wechaty,
   Message,
 }             from 'wechaty'
@@ -8,49 +7,79 @@ import {
   log,
 }                   from './config'
 
-const CHATOPS_ROOM_TOPIC  = 'ChatOps - Mike BO'
-export const CHATOPS_ROOM_ID     = '5611663299@chatroom'
+const BOT_ROOM_ID       = '5611663299@chatroom'   // 'ChatOps - Mike BO'
+const HEARTBEAT_ROOM_ID = '17376996519@chatroom'  // 'ChatOps - Heartbeat'
 
-let room: Room
+export class Chatops {
 
-export async function chatops (
-  bot: Wechaty,
-  textOrMessage: string | Message,
-): Promise<void> {
-  log.info('chatops', 'chatops(%s)', textOrMessage)
+  private static singleton: Chatops
 
-  const online = bot.logonoff()
-  if (!online) {
-    log.error('chatops', 'chatops() bot offline')
-    return
+  public static instance (
+    bot?: Wechaty,
+  ) {
+    if (!this.singleton) {
+      if (!bot) {
+        throw new Error('instance need a Wechaty instance to initialize')
+      }
+      this.singleton = new Chatops(bot)
+    }
+    return this.singleton
   }
 
-  if (!room) {
-    let tryRoom = await bot.Room.find({ topic: CHATOPS_ROOM_TOPIC })
-    if (!tryRoom) {
-      tryRoom = bot.Room.load(CHATOPS_ROOM_ID)
-    }
+  /**
+   * Static
+   * --------
+   * Instance
+   */
 
-    room = tryRoom
+  private constructor (
+    private bot: Wechaty,
+  ) {
+    //
   }
 
-  await room.say(`${textOrMessage}`)
+  public async heartbeat (text: string): Promise<void> {
+    return this.roomMessage(HEARTBEAT_ROOM_ID, text)
+  }
 
-  if (textOrMessage instanceof Message) {
-    switch (textOrMessage.type()) {
-      case Message.Type.Image:
-        const image = await textOrMessage.toFileBox()
-        await room.say(image)
-        break
-      case Message.Type.Url:
-        const urlLink = await textOrMessage.toUrlLink()
-        await room.say(urlLink)
-        break
-      default:
-        const typeName = Message.Type[textOrMessage.type()]
-        await room.say(`message type: ${typeName}`)
-        break
+  public async say (textOrMessage: string | Message) {
+    return this.roomMessage(BOT_ROOM_ID, textOrMessage)
+  }
+
+  private async roomMessage (
+    roomId: string,
+    textOrMessage: string | Message,
+  ): Promise<void> {
+    log.info('Chatops', 'roomMessage(%s, %s)', roomId, textOrMessage)
+
+    const online = this.bot.logonoff()
+    if (!online) {
+      log.error('Chatops', 'roomMessage() this.bot is offline')
+      return
     }
+
+    const room = this.bot.Room.load(roomId)
+    await room.ready()
+
+    await room.say(`${textOrMessage}`)
+
+    if (textOrMessage instanceof Message) {
+      switch (textOrMessage.type()) {
+        case Message.Type.Image:
+          const image = await textOrMessage.toFileBox()
+          await room.say(image)
+          break
+        case Message.Type.Url:
+          const urlLink = await textOrMessage.toUrlLink()
+          await room.say(urlLink)
+          break
+        default:
+          const typeName = Message.Type[textOrMessage.type()]
+          await room.say(`message type: ${typeName}`)
+          break
+      }
+    }
+
   }
 
 }

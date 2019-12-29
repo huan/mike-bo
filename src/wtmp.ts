@@ -4,18 +4,18 @@ import { log } from 'wechaty'
  * How to Use the last Command on Linux
  *   https://www.howtogeek.com/416023/how-to-use-the-last-command-on-linux/
  */
-interface WTmpEntry {
+interface WtmpEntry {
   name    : string,
   login   : number,
   logout? : number,
 }
 
-export class WTmp {
+export class Wtmp {
 
-  private static singleton: WTmp
+  private static singleton: Wtmp
 
   private bornTime: number
-  private wtmpList: WTmpEntry[] = []
+  private wtmpList: WtmpEntry[] = []
 
   public static instance () {
     if (!this.singleton) {
@@ -30,7 +30,7 @@ export class WTmp {
   }
 
   public login (name: string): void {
-    const wtmp: WTmpEntry = {
+    const wtmp: WtmpEntry = {
       login: Date.now(),
       name,
     }
@@ -51,18 +51,18 @@ export class WTmp {
     lastEntry.logout = Date.now()
   }
 
-  public list (): WTmpEntry[] {
+  public list (): WtmpEntry[] {
     return this.wtmpList
   }
 
-  public first (): WTmpEntry {
+  public first (): WtmpEntry {
     if (this.wtmpList.length > 0) {
       return this.wtmpList[0]
     }
     throw new Error('no entry found')
   }
 
-  public last (): WTmpEntry {
+  public last (): WtmpEntry {
     if (this.wtmpList.length > 0) {
       return this.wtmpList[-1]
     }
