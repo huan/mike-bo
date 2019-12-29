@@ -25,10 +25,10 @@ export async function startBot (wechaty: Wechaty): Promise<void> {
     .on('room-leave',   './handlers/on-room-leave')
 
   const heartbeat = async () => {
-    await Chatops.instance().heartbeat(`I'm alive!`)
+    await Chatops.instance().heartbeat('💖')
   }
-  const ONE_HOUR = 60 * 60 * 1000
-  setInterval(heartbeat, ONE_HOUR)
+  const TEN_MINUTES = 10 * 60 * 1000
+  setInterval(heartbeat, TEN_MINUTES)
 
   const wtmp = Wtmp.instance()
   const loginWtmp = (user: Contact) => wtmp.login(user.name())
