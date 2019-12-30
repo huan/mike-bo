@@ -1,4 +1,10 @@
 /**
+ * To make ts-node happy without --files args
+ * Note: this <reference ... /> must be put before all code, or it will be ignored.
+ */
+/// <reference path="./typings.d.ts" />
+
+/**
  * VERSION
  */
 import readPkgUp from 'read-pkg-up'
