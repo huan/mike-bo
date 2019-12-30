@@ -24,12 +24,12 @@ export async function startBot (wechaty: Wechaty): Promise<void> {
     .on('room-join',    './handlers/on-room-join')
     .on('room-leave',   './handlers/on-room-leave')
 
-  const heartbeat = async () => {
-    await Chatops.instance().heartbeat('💖')
+  const heartbeat = (emoji: string) => {
+    return () => Chatops.instance().heartbeat(emoji)
   }
-  const TEN_MINUTES = 10 * 60 * 1000
-  setInterval(heartbeat, TEN_MINUTES)
-  wechaty.on('ready', heartbeat)
+  const ONE_HOUR = 60 * 60 * 1000
+  setInterval(heartbeat('💖'), ONE_HOUR)
+  wechaty.on('ready', heartbeat('🙋‍♂️'))
 
   const wtmp = Wtmp.instance()
   const loginWtmp = (user: Contact) => wtmp.login(user.name())
