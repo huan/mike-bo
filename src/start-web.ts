@@ -21,7 +21,7 @@ async function wechatyBroadcastHandler (
 ) {
   log.info('startWeb', 'webhookHandler()')
 
-  let payload: UrlLinkPayload
+  let payload: UrlLinkPayload & { mikeboSecret?: string }
 
   switch (request.method) {
     case 'get':
@@ -38,6 +38,10 @@ async function wechatyBroadcastHandler (
 
   if (!payload.description || !payload.thumbnailUrl  || !payload.title || !payload.url) {
     return h.response(`payload illegal: "${JSON.stringify(payload)}"`)
+  }
+
+  if (!payload.mikeboSecret || payload.mikeboSecret !== process.env.MIKEBO_SECRET) {
+    return h.response(`mikebo secret illegal: please check MIKEBO_SECRET env variable.`)
   }
 
   const urlLink = new UrlLink(payload)
