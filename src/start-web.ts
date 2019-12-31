@@ -36,12 +36,13 @@ async function wechatyBroadcastHandler (
       throw Error(`method is neither get nor post: ${request.method}`)
   }
 
-  if (!payload.mikeboSecret || payload.mikeboSecret !== process.env.MIKEBO_SECRET) {
+  const MIKEBO_SECRET = process.env.MIKEBO_SECRET
+  if (!payload.mikeboSecret || payload.mikeboSecret !== MIKEBO_SECRET) {
     log.error('startWeb', 'wechatyBroadcastHandler() mikeboSecret is not right: ENV "%s" !== QueryString "%s"',
-      process.env.MIKEBO_SECRET,
+      MIKEBO_SECRET,
       payload.mikeboSecret,
     )
-    return h.response(`mikebo secret illegal: please check MIKEBO_SECRET env variable.`)
+    return h.response(`mikebo secret illegal: please make sure the MIKEBO_SECRET env variable is the same as the QueryString mikeboSecret.`)
   }
 
   if (!payload.description || !payload.thumbnailUrl  || !payload.title || !payload.url) {

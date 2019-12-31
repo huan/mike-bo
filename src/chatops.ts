@@ -7,10 +7,10 @@ import {
 import {
   log,
   WECHATY_DEVELOPERS_HOME_ROOM_ID_LIST,
+  CHATOPS_ROOM_ID,
+  HEARTBEAT_ROOM_ID,
 }                                         from './config'
 
-const BOT_ROOM_ID       = '5611663299@chatroom'   // 'ChatOps - Mike BO'
-const HEARTBEAT_ROOM_ID = '17376996519@chatroom'  // 'ChatOps - Heartbeat'
 
 export class Chatops {
 
@@ -45,7 +45,7 @@ export class Chatops {
   }
 
   public async say (textOrMessage: string | Message) {
-    return this.roomMessage(BOT_ROOM_ID, textOrMessage)
+    return this.roomMessage(CHATOPS_ROOM_ID, textOrMessage)
   }
 
   private async roomMessage (

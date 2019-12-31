@@ -7,6 +7,10 @@ import {
 }             from 'wechaty'
 
 import {
+  CHATOPS_ROOM_ID,
+}                   from '../config'
+
+import {
   Chatops,
 }           from '../chatops'
 
@@ -18,11 +22,48 @@ export default async function onMessage (
 ): Promise<void> {
   log.info('on-message', 'onMessage(%s)', message)
 
-  await dingDong(this, message)
+  await directMessage(message)
+  await mentionMessage(message)
 
-  await chatopsDirectMessage(message)
-  await chatopsRoomMentionMessage(message)
   await ctpStatus(this, message)
+
+  await dingDong(this, message)
+  await adminRoom(message)
+}
+
+async function adminRoom (
+  message: Message,
+): Promise<void> {
+  if (message.self()) {
+    return
+  }
+
+  const room = message.room()
+  if (!room) {
+    return
+  }
+
+  // ChatOps - Mike BO
+  if (room.id !== CHATOPS_ROOM_ID) {
+    return
+  }
+
+  const text = await message.mentionText()
+  if (!text.match(/^#\w+/)) {
+    return
+  }
+
+  const cmd = text.replace(/^#/, '')
+
+  let reply = 'unknown cmd'
+  if (cmd.match(/^wechatyAnnounce /i)) {
+    const announcement = cmd.replace(/^wechatyAnnounce /, '')
+    await Chatops.instance()
+      .wechatyAnnounce(announcement)
+    reply = 'announced.'
+  }
+
+  await message.say(reply)
 }
 
 async function ctpStatus (
@@ -76,7 +117,7 @@ async function ctpStatus (
   await wechaty.sleep(1)
 }
 
-async function chatopsDirectMessage (
+async function directMessage (
   message: Message,
 ): Promise<void> {
   const room = message.room()
@@ -88,7 +129,7 @@ async function chatopsDirectMessage (
   await Chatops.instance().say(message)
 }
 
-async function chatopsRoomMentionMessage (
+async function mentionMessage (
   message: Message,
 ): Promise<void> {
   const room = message.room()

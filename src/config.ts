@@ -32,3 +32,9 @@ export const WECHATY_DEVELOPERS_HOME_ROOM_ID_LIST = [
   '22396239792@chatroom',   // Wechaty Developers' Room 4
   '19112581505@chatroom',   // Wechaty Developers' Room 5
 ]
+
+/**
+ * ChatOps Room ID
+ */
+export const CHATOPS_ROOM_ID   = '5611663299@chatroom'   // 'ChatOps - Mike BO'
+export const HEARTBEAT_ROOM_ID = '17376996519@chatroom'  // 'ChatOps - Heartbeat'
