@@ -1,6 +1,7 @@
 import {
   log,
-}                     from './config'
+}                    from './config'
+
 import { getWechaty } from './get-wechaty'
 import { startBot }   from './start-bot'
 import { startFinis } from './start-finis'

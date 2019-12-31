@@ -1,13 +1,66 @@
-import Hapi    from '@hapi/hapi'
+import Hapi, { Request, ResponseToolkit }    from '@hapi/hapi'
 import {
   Wechaty,
+  UrlLink,
 }               from 'wechaty'
+import {
+  UrlLinkPayload,
+}                   from 'wechaty-puppet'
 
 import {
   log,
   PORT,
   VERSION,
 }             from './config'
+
+import { Chatops } from './chatops'
+
+async function wechatyBroadcastHandler (
+  request: Request,
+  h: ResponseToolkit,
+) {
+  log.info('startWeb', 'webhookHandler()')
+
+  let payload: UrlLinkPayload
+
+  switch (request.method) {
+    case 'get':
+      payload = { ...request.query } as any
+      break
+
+    case 'post':
+      payload = request.payload as any
+      break
+
+    default:
+      throw Error(`method is neither get nor post: ${request.method}`)
+  }
+
+  const urlLink = new UrlLink(payload)
+
+  await Chatops
+    .instance()
+    .wechatyBroadcast(urlLink)
+
+  const html = [
+    'webhook succeed!',
+    JSON.stringify(payload),
+  ].join('<hr />')
+
+  return h.response(html)
+}
+
+async function chatopsHandler (request: Request, response: ResponseToolkit) {
+  log.info('startWeb', 'chatopsHandler()')
+
+  const payload: {
+    chatops: string,
+  } = request.payload as any
+
+  await Chatops.instance().say(payload.chatops)
+
+  return response.redirect('/')
+}
 
 export async function startWeb (bot: Wechaty): Promise<void> {
   log.verbose('startWeb', 'startWeb(%s)', bot)
@@ -19,7 +72,7 @@ export async function startWeb (bot: Wechaty): Promise<void> {
     port: PORT,
   })
 
-  const handler = () => {
+  const rootHandler = () => {
     let html
     if (qrcodeValue) {
       html = [
@@ -45,11 +98,31 @@ export async function startWeb (bot: Wechaty): Promise<void> {
     ].join('')
   }
 
-  server.route({
-    handler,
+  const rootRoute = {
+    handler: rootHandler,
     method : 'GET',
     path   : '/',
-  })
+  }
+
+  const chatopsRoute = {
+    handler: chatopsHandler,
+    method : 'POST',
+    path   : '/chatops/',
+  }
+
+  const wechatyBroadcastRoute = {
+    handler: wechatyBroadcastHandler,
+    method : ['GET', 'POST'],
+    path   : '/wechaty/',
+  }
+
+  const routeList = [
+    rootRoute,
+    chatopsRoute,
+    wechatyBroadcastRoute,
+  ]
+
+  server.route(routeList)
 
   bot.on('scan', qrcode => {
     qrcodeValue = qrcode
