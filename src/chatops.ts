@@ -61,7 +61,7 @@ export class Chatops {
     }
 
     const room = this.bot.Room.load(roomId)
-    await room.ready()
+    // await room.ready()
 
     if (typeof info === 'string') {
       await room.say(info)
@@ -105,7 +105,7 @@ export class Chatops {
     for (const roomId of WECHATY_DEVELOPERS_HOME_ROOM_ID_LIST) {
       const room = this.bot.Room.load(roomId)
       try {
-        await room.ready()
+        // await room.ready()
         await room.announce(announcement)
       } catch (e) {
         log.error('Chatops', 'wechatyAnnounce() rejection: %s', e)
