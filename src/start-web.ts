@@ -36,6 +36,10 @@ async function wechatyBroadcastHandler (
       throw Error(`method is neither get nor post: ${request.method}`)
   }
 
+  if (!payload.description || !payload.thumbnailUrl  || !payload.title || !payload.url) {
+    return h.response(`payload illegal: "${JSON.stringify(payload)}"`)
+  }
+
   const urlLink = new UrlLink(payload)
 
   await Chatops
