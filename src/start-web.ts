@@ -37,6 +37,10 @@ async function wechatyBroadcastHandler (
   }
 
   if (!payload.mikeboSecret || payload.mikeboSecret !== process.env.MIKEBO_SECRET) {
+    log.error('startWeb', 'wechatyBroadcastHandler() mikeboSecret is not right: ENV "%s" !== QueryString "%s"',
+      process.env.MIKEBO_SECRET,
+      payload.mikeboSecret,
+    )
     return h.response(`mikebo secret illegal: please check MIKEBO_SECRET env variable.`)
   }
 
