@@ -29,6 +29,6 @@ export const WECHATY_DEVELOPERS_HOME_ROOM_ID_LIST = [
   '7582163093@chatroom',    // Wechaty Developers' Room 1
   '5729603967@chatroom',    // Wechaty Developers' Room 2
   '4335801863@chatroom',    // Wechaty Developers' Room 3
-  // '', // Wechaty Developers' Room 4
-  // '', // Wechaty Developers' Room 5
+  '22396239792@chatroom',   // Wechaty Developers' Room 4
+  '19112581505@chatroom',   // Wechaty Developers' Room 5
 ]
