@@ -11,7 +11,6 @@ import {
   HEARTBEAT_ROOM_ID,
 }                                         from './config'
 
-
 export class Chatops {
 
   private static singleton: Chatops
