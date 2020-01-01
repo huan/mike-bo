@@ -5,6 +5,10 @@ import {
   log,
 }           from './config'
 
+import {
+  Chatops,
+}           from './chatops'
+
 export interface VotePayload {
   count       : number,
   voterIdList : string[],
@@ -105,7 +109,11 @@ export class VoteManager {
 
       const hasVoted = payload.voterIdList.includes(from.id)
       if (hasVoted) {
-        await room.say`${from} You have already voted. There need not to vote down ${mention} for more than once.`
+        const task = () => room.say`${from} You have already voted. There need not to vote down ${mention} for more than once.`
+        await Chatops.instance().queue(
+          task,
+          'has-voted',
+        )
       } else {
         payload.count++
         payload.voterIdList = [...new Set([
@@ -127,9 +135,21 @@ export class VoteManager {
 
       if (payload.count >= DEFAULT_VOTE_THRESHOLD) {
 
-        await room.say`UNWELCOME GUEST FOUND: ${mention}\nThank you ${nameText} for voting for the community, we apprecate it.\nThanks for everyone in this room for keeping topic stick to Wechaty & Chatbot technology.\n`
-        await room.del(mention)
-        this.voteMemory.del(KEY)
+        const task = async () => {
+          await room.say`UNWELCOME GUEST FOUND: ${mention}\nThank you ${nameText} for voting for the community, we apprecate it.\nThanks for everyone in this room for keeping topic stick to Wechaty & Chatbot technology.\n`
+          await message.wechaty.sleep(5 * 1000)
+          await room.say`Removing ${mention} out to this room ...`
+          await message.wechaty.sleep(5 * 1000)
+          await room.del(mention)
+          await message.wechaty.sleep(5 * 1000)
+          await room.say`Done.`
+          this.voteMemory.del(KEY)
+        }
+
+        await Chatops.instance().queue(
+          task,
+          'vote-manager-execute',
+        )
       }
     }
   }
