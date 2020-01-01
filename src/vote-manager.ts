@@ -98,41 +98,36 @@ export class VoteManager {
       if (!payload) {
         payload = {
           count: 1,
-          voterIdList: [mention.id],
+          voterIdList: [from.id],
         }
         this.voteMemory.set(KEY, payload)
       }
 
-      const { count, voterIdList } = payload
-
-      const hasVoted = voterIdList.includes(from.id)
+      const hasVoted = payload.voterIdList.includes(from.id)
       if (hasVoted) {
-        await from.say(`You have already voted down ${from.name()} before.`)
+        await room.say`${from} You have already voted. There need not to vote down ${mention} for more than once.`
       } else {
-        await from.say(
-          [
-            `You voted down ${from.name()} in room ${topic}.`,
-            `The one who has been voted down by more than three room members`,
-            'will be removed out from the room as an unwelcome guest.',
-          ].join(' ')
-        )
+        payload.count++
+        payload.voterIdList = [...new Set([
+          ...payload.voterIdList,
+          from.id,
+        ])]
+
+        this.voteMemory.set(KEY, payload)
       }
 
-      await room.say`${mention} have been voted down by ${from}.`
-      this.voteMemory.set(KEY, {
-        count: count + 1,
-        voterIdList: [...voterIdList, from.id],
-      })
+      const voterContactList = payload.voterIdList.map(id => message.wechaty.Contact.load(id))
+      await Promise.all(
+        voterContactList.map(c => c.ready())
+      )
+      const nameList = voterContactList.map(c => c.name())
+      const nameText = '@' + nameList.join(', @')
 
-      if (count > DEFAULT_VOTE_THRESHOLD) {
-        const voterContactList = voterIdList.map(id => message.wechaty.Contact.load(id))
-        await Promise.all(
-          voterContactList.map(c => c.ready())
-        )
-        const nameList = voterContactList.map(c => c.name())
-        const nameText = '@' + nameList.join(', @')
+      await room.say`[VOTE DOWN] ${mention} (Total: ${payload.count} times).\nThe one who has been voted down by more than three people will be removed from the room as an unwelcome guest.\nVOTERS: ${nameText}.`
 
-        await room.say`UNWELCOME GUEST FOUND: ${mention}\n You will be moved out of this room because ${nameText} have voted you down.`
+      if (payload.count > DEFAULT_VOTE_THRESHOLD) {
+
+        await room.say`UNWELCOME GUEST FOUND: ${mention}\nYou will be moved out of this room because ${nameText} have voted you down.`
         await room.del(mention)
         this.voteMemory.del(KEY)
       }
