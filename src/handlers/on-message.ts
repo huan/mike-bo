@@ -15,12 +15,19 @@ import {
 }           from '../chatops'
 
 import { Wtmp } from '../wtmp'
+import { VoteManager } from '../vote-manager'
 
 export default async function onMessage (
   this    : Wechaty,
   message : Message,
 ): Promise<void> {
   log.info('on-message', 'onMessage(%s)', message)
+
+  try {
+    await VoteManager.instance().checkVote(message)
+  } catch (e) {
+    log.error('on-message', 'Failed to check vote for the message: %s', e)
+  }
 
   await directMessage(message)
   await mentionMessage(message)
@@ -29,6 +36,7 @@ export default async function onMessage (
 
   await dingDong(this, message)
   await adminRoom(message)
+
 }
 
 async function adminRoom (

@@ -34,14 +34,16 @@
     "@types/read-pkg-up": "^6.0.0",
     "brolog": "^1.6.5",
     "finis": "^0.4.3",
+    "lru-cache": "^5.1.1",
     "moment": "^2.24.0",
     "read-pkg-up": "^7.0.1",
-    "wechaty": "^0.29.23",
+    "wechaty": "^0.29.31",
     "wechaty-puppet-padplus": "^0.2.0"
   },
   "devDependencies": {
     "@chatie/eslint-config": "^0.8.1",
     "@chatie/git-scripts": "^0.2.5",
+    "@types/lru-cache": "^5.1.0",
     "tstest": "^0.4.2"
   },
   "git": {
