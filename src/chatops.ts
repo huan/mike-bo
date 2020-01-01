@@ -2,7 +2,10 @@ import {
   Wechaty,
   Message,
   UrlLink,
+  FileBox,
 }             from 'wechaty'
+
+import { DelayQueueExecutor } from 'rx-queue'
 
 import {
   log,
@@ -33,10 +36,12 @@ export class Chatops {
    * Instance
    */
 
+  private delayQueueExecutor: DelayQueueExecutor
+
   private constructor (
     private bot: Wechaty,
   ) {
-    //
+    this.delayQueueExecutor = new DelayQueueExecutor(5 * 1000)  // set delay period time to 5 seconds
   }
 
   public async heartbeat (text: string): Promise<void> {
@@ -62,32 +67,36 @@ export class Chatops {
     const room = this.bot.Room.load(roomId)
     // await room.ready()
 
+    let something: string | FileBox | UrlLink
+
     if (typeof info === 'string') {
-      await room.say(info)
+      something = info
     } else if (info instanceof Message) {
       switch (info.type()) {
         case Message.Type.Text:
-          await room.say(`${info}`)
+          something = `${info}`
           break
         case Message.Type.Image:
-          const image = await info.toFileBox()
-          await room.say(image)
+          something = await info.toFileBox()
           break
         case Message.Type.Url:
-          const urlLink = await info.toUrlLink()
-          await room.say(urlLink)
+          something = await info.toUrlLink()
           break
         default:
           const typeName = Message.Type[info.type()]
-          await room.say(`message type: ${typeName}`)
+          something = `message type: ${typeName}`
           break
       }
     } else if (info instanceof UrlLink) {
-      await room.say(info)
+      something = info
     } else {
       throw new Error('not supported message.')
     }
 
+    await this.queue(
+      () => room.say(something as any),
+      'roomSay',
+    )
   }
 
   public async wechatyBroadcast (info: string | UrlLink) {
@@ -105,11 +114,23 @@ export class Chatops {
       const room = this.bot.Room.load(roomId)
       try {
         // await room.ready()
-        await room.announce(announcement)
+        await this.queue(
+          () => room.announce(announcement),
+          'announcement',
+        )
       } catch (e) {
         log.error('Chatops', 'wechatyAnnounce() rejection: %s', e)
       }
     }
+  }
+
+  public async queue (
+    fn: (() => any),
+    name?: string,
+  ) {
+    log.verbose('Chatops', 'queue(,"%s")', name)
+    await this.delayQueueExecutor.execute(fn, name)
+    log.verbose('Chatops', 'queue(,"%s") done.', name)
   }
 
 }
