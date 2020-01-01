@@ -101,10 +101,9 @@ export class VoteManager {
       let payload = this.voteMemory.get(KEY)
       if (!payload) {
         payload = {
-          count: 1,
-          voterIdList: [from.id],
+          count: 0,
+          voterIdList: [],
         }
-        this.voteMemory.set(KEY, payload)
       }
 
       const hasVoted = payload.voterIdList.includes(from.id)
