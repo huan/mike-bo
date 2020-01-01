@@ -131,12 +131,28 @@ export class VoteManager {
       const nameList = voterContactList.map(c => c.name())
       const nameText = '@' + nameList.join(', @')
 
-      await room.say`[VOTE DOWN] ${mention} (Total: ${payload.count} times).\nThe one who has been voted down by three people will be removed from the room as an unwelcome guest.\nVOTERS: ${nameText}.`
+      let emoji: string
+      switch (payload.count) {
+        case 0:
+        case 1:
+          emoji = '[Awkward]'
+          break
+        case 2:
+          emoji = '[Panic]'
+          break
+        case 3:
+          emoji = '[Angry]'
+          break
+        default:
+          emoji = '[Bomb]'
+      }
+
+      await room.say`[VOTE DOWN] ${emoji} ${mention} (Total: ${payload.count} times).\nThe one who has been voted down by three people will be removed from the room as an unwelcome guest.\nVOTERS: ${nameText}.`
 
       if (payload.count >= DEFAULT_VOTE_THRESHOLD) {
 
         const task = async () => {
-          await room.say`UNWELCOME GUEST FOUND: ${mention}\nThank you ${nameText} for voting for the community, we apprecate it.\nThanks for everyone in this room for keeping topic stick to Wechaty & Chatbot technology.\n`
+          await room.say`UNWELCOME GUEST FOUND:\n[Dagger][Dagger][Dagger] ${mention} [Cleaver][Cleaver][Cleaver]\nThank you [Rose] ${nameText} [Rose] for voting for the community, we apprecate it.\nThanks for everyone in this room for keeping topic stick to Wechaty [Heart] Chatbot technology.\n`
           await message.wechaty.sleep(5 * 1000)
           await room.say`Removing ${mention} out to this room ...`
           await message.wechaty.sleep(5 * 1000)
