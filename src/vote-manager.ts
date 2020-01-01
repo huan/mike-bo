@@ -123,11 +123,11 @@ export class VoteManager {
       const nameList = voterContactList.map(c => c.name())
       const nameText = '@' + nameList.join(', @')
 
-      await room.say`[VOTE DOWN] ${mention} (Total: ${payload.count} times).\nThe one who has been voted down by more than three people will be removed from the room as an unwelcome guest.\nVOTERS: ${nameText}.`
+      await room.say`[VOTE DOWN] ${mention} (Total: ${payload.count} times).\nThe one who has been voted down by three people will be removed from the room as an unwelcome guest.\nVOTERS: ${nameText}.`
 
-      if (payload.count > DEFAULT_VOTE_THRESHOLD) {
+      if (payload.count >= DEFAULT_VOTE_THRESHOLD) {
 
-        await room.say`UNWELCOME GUEST FOUND: ${mention}\nYou will be moved out of this room because ${nameText} have voted you down.`
+        await room.say`UNWELCOME GUEST FOUND: ${mention}\nThank you ${nameText} for voting for the community, we apprecate it.\nThanks for everyone in this room for keeping topic stick to Wechaty & Chatbot technology.\n`
         await room.del(mention)
         this.voteMemory.del(KEY)
       }
