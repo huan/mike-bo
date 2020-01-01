@@ -19,7 +19,7 @@ async function wechatyBroadcastHandler (
   request: Request,
   h: ResponseToolkit,
 ) {
-  log.info('startWeb', 'webhookHandler()')
+  log.info('startWeb', 'wechatyBroadcastHandler()')
 
   let payload: UrlLinkPayload & { mikeboSecret?: string }
 
@@ -51,9 +51,11 @@ async function wechatyBroadcastHandler (
 
   const urlLink = new UrlLink(payload)
 
-  await Chatops
+  Chatops
     .instance()
     .wechatyBroadcast(urlLink)
+    .then(() => log.verbose('start-web', 'wechatyBroadcastHandler() queued.'))
+    .catch(e => log.error('start-web', 'wechatyBroadcastHandler() rejection: %s', e))
 
   const html = [
     'webhook succeed!',
