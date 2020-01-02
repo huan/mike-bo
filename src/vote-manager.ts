@@ -278,7 +278,7 @@ export class VoteManager {
       contactList.map(c => c.ready())
     )
     const mentionList = contactList.map(c => c.name())
-    const mentionText = '@' + mentionList.join(', @')
+    const mentionText = '@' + mentionList.join(' @')
     return mentionText
   }
 
