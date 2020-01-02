@@ -338,7 +338,7 @@ export class VoteManager {
 
     const voteStatus = `${EMOJI_THUMB_DOWN}${numDown} | ${numUp}${EMOJI_THUMB_UP}`
     // const voteInfo = `The one who has been voted nagitive by three people will be removed from the room as an unwelcome guest.`
-    let voteInfo = 'By:\n'
+    let voteInfo = '———————————————\n'
 
     if (payload.downIdList.length) {
       voteInfo += `${EMOJI_THUMB_DOWN} ${downVotersMentionText}\n`
