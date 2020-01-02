@@ -332,7 +332,7 @@ export class VoteManager {
       room,
     )
 
-    const voteStatus = `${EMOJI_THUMB_DOWN}${numDown} | ${EMOJI_THUMB_UP}${numUp}`
+    const voteStatus = `${EMOJI_THUMB_DOWN}${numDown} | ${numUp}${EMOJI_THUMB_UP}`
     const voteInfo = `The one who has been voted nagitive by three people will be removed from the room as an unwelcome guest.`
 
     const task = () => room.say`${voteStatus} ${target}\nBy: ${votersMentionText}\n\n${voteInfo}`
