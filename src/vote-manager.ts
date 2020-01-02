@@ -327,15 +327,28 @@ export class VoteManager {
     const numUp = payload.upCounter
     const numDown = payload.downCounter
 
-    const votersMentionText = await this.mentionTextFromContactIdList(
-      [...payload.downIdList, ...payload.upIdList],
+    const upVotersMentionText = await this.mentionTextFromContactIdList(
+      [...payload.upIdList],
+      room,
+    )
+    const downVotersMentionText = await this.mentionTextFromContactIdList(
+      [...payload.downIdList],
       room,
     )
 
     const voteStatus = `${EMOJI_THUMB_DOWN}${numDown} | ${numUp}${EMOJI_THUMB_UP}`
-    const voteInfo = `The one who has been voted nagitive by three people will be removed from the room as an unwelcome guest.`
+    // const voteInfo = `The one who has been voted nagitive by three people will be removed from the room as an unwelcome guest.`
+    let voteInfo = 'By:\n'
 
-    const task = () => room.say`${voteStatus} ${target}\nBy: ${votersMentionText}\n\n${voteInfo}`
+    if (payload.downIdList.length) {
+      voteInfo += `${EMOJI_THUMB_DOWN} ${downVotersMentionText}\n`
+    }
+
+    if (payload.upIdList.length) {
+      voteInfo += `${EMOJI_THUMB_UP} ${upVotersMentionText}\n`
+    }
+
+    const task = () => room.say`${voteStatus} ${target}\n${voteInfo}`
     Chatops.instance().queue(task, 'sayVoteStatus')
       .catch(e => log.error('Chatops', 'sayVoteStatus() queue() rejection: %s', e))
   }
