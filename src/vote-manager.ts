@@ -1,4 +1,8 @@
-import { Message } from 'wechaty'
+import {
+  Message,
+  Room,
+  Contact,
+}             from 'wechaty'
 import LRUCache  from 'lru-cache'
 
 import {
@@ -10,14 +14,29 @@ import {
 }           from './chatops'
 
 export interface VotePayload {
-  count       : number,
-  voterIdList : string[],
+  downCounter : number,
+  downIdList  : string[],
+
+  upCounter : number,
+  upIdList  : string[],
 }
 
-const VOTE_KEY = [
+const EMOJI_THUMB_UP    = '[ThumbsUp]'
+const EMOJI_THUMB_DOWN  = '[ThumbsDown]'
+
+const VOTE_DOWN_EMOJI_LIST = [
   '[弱]',
   '/:MMWeak',
+  EMOJI_THUMB_DOWN,
 ]
+
+const VOTE_UP_EMOJI_LIST = [
+  '[强]',
+  '/:MMStrong',
+  EMOJI_THUMB_UP,
+]
+
+// [炸弹]
 
 const DEFAULT_VOTE_THRESHOLD = 3
 
@@ -61,6 +80,51 @@ export class VoteManager {
     this.voteMemory = new LRUCache<string, VotePayload>(lruOptions)
   }
 
+  private async validVote (message: Message): Promise<boolean> {
+    const room = message.room()
+    const from = message.from()
+
+    if (!room || !from || message.type() !== Message.Type.Text) {
+      return false
+    }
+
+    const topic = await room.topic()
+    const isManaged = MANAGED_ROOM_TOPIC_REGEX_LIST.some(regex => regex.test(topic))
+    if (!isManaged) {
+      return false
+    }
+
+    const mentionList = await message.mentionList()
+    if (!mentionList || mentionList.length === 0) {
+      return false
+    }
+
+    for (const mention of mentionList) {
+      if (mention.id === message.wechaty.userSelf().id) {
+        return false
+      }
+    }
+
+    const mentionText = await message.mentionText()
+    const isVoteDown  = this.isVoteDown(mentionText)
+    const isVoteUp    = this.isVoteUp(mentionText)
+
+    const isVote      = isVoteDown || isVoteUp
+    if (!isVote) {
+      return false
+    }
+
+    return true
+  }
+
+  private isVoteDown (text: string): boolean {
+    return VOTE_DOWN_EMOJI_LIST.includes(text)
+  }
+
+  private isVoteUp (text: string): boolean {
+    return VOTE_UP_EMOJI_LIST.includes(text)
+  }
+
   /**
    * @param message
    * @description Check whether the message is a vote message
@@ -68,105 +132,233 @@ export class VoteManager {
   public async checkVote (message: Message) {
     log.verbose('VoteManager', 'checkVote(%s)', message)
 
-    const room = message.room()
-    const from = message.from()
-
-    if (!room || !from || message.type() !== Message.Type.Text) {
-      return
-    }
-
-    const topic = await room.topic()
-    const isManaged = MANAGED_ROOM_TOPIC_REGEX_LIST.some(regex => regex.test(topic))
-    if (!isManaged) {
-      return
-    }
-
-    const mentionList = await message.mentionList()
-    if (!mentionList || mentionList.length === 0) {
+    const validVote = await this.validVote(message)
+    if (!validVote) {
       return
     }
 
     const mentionText = await message.mentionText()
-    const isKeyword = VOTE_KEY.includes(mentionText)
-    if (!isKeyword) {
-      return
+
+    if (this.isVoteDown(mentionText)) {
+      return this.doVoteDown(message)
+    } else if (this.isVoteUp(mentionText)) {
+      return this.doVoteUp(message)
     }
 
-    for (const mention of mentionList) {
-      if (mention.id === message.wechaty.userSelf().id) {
-        return
+  }
+
+  private getVoteKey (
+    room: Room,
+    candidate: Contact,
+  ): string {
+    return `${room.id}-${candidate.id}-vote`
+  }
+
+  private getMemory (
+    room: Room,
+    candidate: Contact,
+  ): VotePayload {
+    const key = this.getVoteKey(room, candidate)
+    let payload = this.voteMemory.get(key)
+
+    if (!payload) {
+      payload = {
+        downCounter: 0,
+        downIdList: [],
+        upCounter: 0,
+        upIdList: [],
       }
+    }
 
-      const KEY = `${room.id}-${mention.id}-voteDown`
-      let payload = this.voteMemory.get(KEY)
-      if (!payload) {
-        payload = {
-          count: 0,
-          voterIdList: [],
-        }
-      }
+    return payload
+  }
 
-      const hasVoted = payload.voterIdList.includes(from.id)
-      if (hasVoted) {
-        const task = () => room.say`${from} You have already voted. There need not to vote down ${mention} for more than once.`
-        await Chatops.instance().queue(
-          task,
-          'has-voted',
-        )
-      } else {
-        payload.count++
-        payload.voterIdList = [...new Set([
-          ...payload.voterIdList,
-          from.id,
-        ])]
+  private setMemory (
+    room: Room,
+    candidate: Contact,
+    payload?: VotePayload,
+  ) {
+    const key = this.getVoteKey(room, candidate)
+    if (payload) {
+      this.voteMemory.set(key, payload)
+    } else {
+      this.voteMemory.del(key)
+    }
+  }
 
-        this.voteMemory.set(KEY, payload)
-      }
+  private async doVoteDown (
+    message: Message,
+  ): Promise<void> {
+    const mentionList = await message.mentionList()
 
-      const voterContactList = payload.voterIdList.map(id => message.wechaty.Contact.load(id))
-      await Promise.all(
-        voterContactList.map(c => c.ready())
+    const room = message.room()!
+    const from = message.from()!
+
+    for (const target of mentionList) {
+
+      const payload = this.getMemory(room, target)
+
+      const hadVoted = await this.hadVoted(
+        payload.downIdList,
+        from,
+        target,
+        room,
       )
-      const nameList = voterContactList.map(c => c.name())
-      const nameText = '@' + nameList.join(', @')
 
-      let emoji: string
-      switch (payload.count) {
-        case 0:
-        case 1:
-          emoji = '[Awkward]'
-          break
-        case 2:
-          emoji = '[Panic]'
-          break
-        case 3:
-          emoji = '[Angry]'
-          break
-        default:
-          emoji = '[Bomb]'
+      if (hadVoted) {
+        continue
       }
 
-      await room.say`[VOTE DOWN] ${emoji} ${mention} (Total: ${payload.count} times).\nThe one who has been voted down by three people will be removed from the room as an unwelcome guest.\nVOTERS: ${nameText}.`
+      payload.downCounter++
+      payload.downIdList = [...new Set(
+        [
+          ...payload.downIdList,
+          from.id,
+        ],
+      )]
+      this.setMemory(room, target, payload)
 
-      if (payload.count >= DEFAULT_VOTE_THRESHOLD) {
+      await this.sayVoteStatus(payload, target, room)
 
-        const task = async () => {
-          await room.say`UNWELCOME GUEST FOUND:\n[Dagger][Dagger][Dagger] ${mention} [Cleaver][Cleaver][Cleaver]\nThank you [Rose] ${nameText} [Rose] for voting for the community, we apprecate it.\nThanks for everyone in this room for keeping topic stick to Wechaty [Heart] Chatbot technology.\n`
-          await message.wechaty.sleep(5 * 1000)
-          await room.say`Removing ${mention} out to this room ...`
-          await message.wechaty.sleep(5 * 1000)
-          await room.del(mention)
-          await message.wechaty.sleep(5 * 1000)
-          await room.say`Done.`
-          this.voteMemory.del(KEY)
-        }
+      if (payload.downCounter - payload.upCounter >= DEFAULT_VOTE_THRESHOLD) {
 
-        await Chatops.instance().queue(
-          task,
-          'vote-manager-execute',
-        )
+        this.executeKick(payload, room, target)
+          .catch(e => log.error('VoteManager', 'doVoteDown() executeKick() rejection: %s', e))
+
+        this.setMemory(room, target, undefined)  // del
       }
     }
+  }
+
+  private async doVoteUp (
+    message: Message,
+  ): Promise<void> {
+    const mentionList = await message.mentionList()
+
+    const room = message.room()!
+    const from = message.from()!
+
+    for (const target of mentionList) {
+
+      const payload = this.getMemory(room, target)
+
+      const hadVoted = await this.hadVoted(
+        payload.upIdList,
+        from,
+        target,
+        room,
+      )
+
+      if (hadVoted) {
+        continue
+      }
+
+      payload.upCounter++
+      payload.upIdList = [...new Set([
+        ...payload.upIdList,
+        from.id,
+      ])]
+      this.setMemory(room, target, payload)
+
+      await this.sayVoteStatus(payload, target, room)
+
+    }
+  }
+
+  async mentionTextFromContactIdList (
+    idList: string[],
+    room: Room,
+  ) {
+    const contactList = idList.map(
+      id => room.wechaty.Contact.load(id)
+    )
+    await Promise.all(
+      contactList.map(c => c.ready())
+    )
+    const mentionList = contactList.map(c => c.name())
+    const mentionText = '@' + mentionList.join(', @')
+    return mentionText
+  }
+
+  async hadVoted (
+    voterIdList: string[],
+    voter: Contact,
+    target: Contact,
+    room: Room,
+  ) {
+    const hasVoted = voterIdList.includes(voter.id)
+    if (!hasVoted) {
+      return false
+    }
+
+    const task = () => room.say`${voter} You can only vote ${target} once.`
+    Chatops.instance().queue(
+      task,
+      'has-voted',
+    ).catch(e => {
+      log.error('Chatops', 'hadVoted() queue() rejection %s', e)
+    })
+    return true
+  }
+
+  private async sayVoteStatus (
+    payload: VotePayload,
+    target: Contact,
+    room: Room,
+  ): Promise<void> {
+    // let emoji: string
+    // switch (payload.downCounter) {
+    //   case 0:
+    //   case 1:
+    //     emoji = '[Awkward]'
+    //     break
+    //   case 2:
+    //     emoji = '[Panic]'
+    //     break
+    //   case 3:
+    //     emoji = '[Angry]'
+    //     break
+    //   default:
+    //     emoji = '[Bomb]'
+    // }
+
+    const numUp = payload.upCounter
+    const numDown = payload.downCounter
+
+    const votersMentionText = await this.mentionTextFromContactIdList(
+      [...payload.downIdList, ...payload.upIdList],
+      room,
+    )
+
+    const voteStatus = `${EMOJI_THUMB_DOWN}${numDown} | ${EMOJI_THUMB_UP}${numUp}`
+    const voteInfo = `The one who has been voted nagitive by three people will be removed from the room as an unwelcome guest.`
+
+    const task = () => room.say`${voteStatus} ${target}\nBy: ${votersMentionText}\n\n${voteInfo}`
+    Chatops.instance().queue(task, 'sayVoteStatus')
+      .catch(e => log.error('Chatops', 'sayVoteStatus() queue() rejection: %s', e))
+  }
+
+  private async executeKick (
+    payload: VotePayload,
+    room: Room,
+    target: Contact,
+  ) {
+    const votersMentionText = await this.mentionTextFromContactIdList(payload.downIdList, room)
+    // const announcement =
+    const task = async () => {
+      await room.say`UNWELCOME GUEST CONFIRMED:\n[Dagger] ${target} [Cleaver]\n\nThank you [Rose] ${votersMentionText} [Rose] for voting for the community, we apprecate it.\n\nThanks for everyone in this room for respect our CODE OF CONDUCT.\n`
+      await room.wechaty.sleep(5 * 1000)
+      await room.say`Removing ${target} out to this room ...`
+      await room.wechaty.sleep(5 * 1000)
+      await room.del(target)
+      await room.wechaty.sleep(5 * 1000)
+      await room.say`Done.`
+    }
+
+    await Chatops.instance().queue(
+      task,
+      'vote-manager-execute',
+    )
   }
 
 }
