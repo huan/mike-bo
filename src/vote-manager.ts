@@ -269,7 +269,9 @@ export class VoteManager {
     idList: string[],
     room: Room,
   ) {
-    const contactList = idList.map(
+    const uniqIdList = [...new Set([...idList])]
+
+    const contactList = uniqIdList.map(
       id => room.wechaty.Contact.load(id)
     )
     await Promise.all(
