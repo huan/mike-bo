@@ -71,7 +71,13 @@ async function restartHandler (
 ) {
   log.info('startWeb', 'restartHandler()')
 
-  await Wechaty.instance().reset('restart from web')
+  try {
+    await Chatops.instance().say('restarting from web...')
+    await Wechaty.instance().reset('restart from web')
+  } catch (e) {
+    log.error('start-web', 'restartHandler() rejection: %s', e && e.message)
+    return response.response('restarting from web rejection: ' + e)
+  }
 
   return response.redirect('/')
 }
@@ -122,7 +128,7 @@ export async function startWeb (bot: Wechaty): Promise<void> {
       '<hr />',
       '<a href="https://dashboard.heroku.com/apps/mike-bo/logs" target="_blank">Logs</a>',
       '<br />',
-      '<a href="/restart">Restart Bot</a>',
+      '<a href="/restart/">Restart Bot</a>',
     ].join('')
   }
 
