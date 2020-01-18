@@ -336,19 +336,20 @@ export class VoteManager {
       room,
     )
 
-    const voteStatus = `${EMOJI_THUMB_DOWN}${numDown} | ${numUp}${EMOJI_THUMB_UP}`
+    const voteStatus = `${EMOJI_THUMB_DOWN}-${numDown} | +${numUp}${EMOJI_THUMB_UP}`
     // const voteInfo = `The one who has been voted nagitive by three people will be removed from the room as an unwelcome guest.`
-    let voteInfo = '———————————————\n'
-
-    if (payload.downIdList.length) {
-      voteInfo += `${EMOJI_THUMB_DOWN} ${downVotersMentionText}\n`
-    }
+    const horizontalLine = '———————————'
+    const voteRule = `The one who has been voted ${EMOJI_THUMB_DOWN} by three people will be removed from the room as an unwelcome guest.`
+    let voteInfo = `${horizontalLine}\n${voteRule}\n\n`
 
     if (payload.upIdList.length) {
-      voteInfo += `${EMOJI_THUMB_UP} ${upVotersMentionText}\n`
+      voteInfo += `${EMOJI_THUMB_UP} By ${upVotersMentionText}\n`
+    }
+    if (payload.downIdList.length) {
+      voteInfo += `${EMOJI_THUMB_DOWN} By ${downVotersMentionText}\n`
     }
 
-    const task = () => room.say`${voteStatus} ${target}\n${voteInfo}`
+    const task = () => room.say`${target} : ${voteStatus}\n${voteInfo}`
     Chatops.instance().queue(task, 'sayVoteStatus')
       .catch(e => log.error('Chatops', 'sayVoteStatus() queue() rejection: %s', e))
   }
