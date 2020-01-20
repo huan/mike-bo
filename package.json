@@ -37,8 +37,8 @@
     "lru-cache": "^5.1.1",
     "moment": "^2.24.0",
     "read-pkg-up": "^7.0.1",
-    "wechaty": "^0.29.31",
-    "wechaty-puppet-padplus": "^0.2.0"
+    "wechaty": "^0.29.34",
+    "wechaty-puppet-padplus": "^0.3.11"
   },
   "devDependencies": {
     "@chatie/eslint-config": "^0.8.1",
