@@ -71,10 +71,10 @@ async function restartHandler (
 ) {
   log.info('startWeb', 'restartHandler()')
 
-  Chatops.instance().queue( async () => {
+  Chatops.instance().queue(async () => {
     await Chatops.instance().say('restarting from web...')
     await Wechaty.instance().reset('restart from web')
-  }).catch (e =>{
+  }).catch(e => {
     log.error('start-web', 'restartHandler() rejection: %s', e && e.message)
   })
 
