@@ -71,15 +71,18 @@ async function restartHandler (
 ) {
   log.info('startWeb', 'restartHandler()')
 
-  try {
+  Chatops.instance().queue( async () => {
     await Chatops.instance().say('restarting from web...')
     await Wechaty.instance().reset('restart from web')
-  } catch (e) {
+  }).catch (e =>{
     log.error('start-web', 'restartHandler() rejection: %s', e && e.message)
-    return response.response('restarting from web rejection: ' + e)
-  }
+  })
 
-  return response.redirect('/')
+  return response.response([
+    'restarting from web ...',
+    '<br />',
+    '<a href="/">Return</a>',
+  ].join(''))
 }
 
 async function chatopsHandler (request: Request, response: ResponseToolkit) {
