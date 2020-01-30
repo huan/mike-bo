@@ -65,6 +65,26 @@ async function wechatyBroadcastHandler (
   return h.response(html)
 }
 
+async function restartHandler (
+  _request: Request,
+  response: ResponseToolkit,
+) {
+  log.info('startWeb', 'restartHandler()')
+
+  Chatops.instance().queue(async () => {
+    await Chatops.instance().say('restarting from web...')
+    await Wechaty.instance().reset('restart from web')
+  }).catch(e => {
+    log.error('start-web', 'restartHandler() rejection: %s', e && e.message)
+  })
+
+  return response.response([
+    'restarting from web ...',
+    '<br />',
+    '<a href="/">Return</a>',
+  ].join(''))
+}
+
 async function chatopsHandler (request: Request, response: ResponseToolkit) {
   log.info('startWeb', 'chatopsHandler()')
 
@@ -110,6 +130,8 @@ export async function startWeb (bot: Wechaty): Promise<void> {
       html,
       '<hr />',
       '<a href="https://dashboard.heroku.com/apps/mike-bo/logs" target="_blank">Logs</a>',
+      '<br />',
+      '<a href="/restart/">Restart Bot</a>',
     ].join('')
   }
 
@@ -117,6 +139,12 @@ export async function startWeb (bot: Wechaty): Promise<void> {
     handler: rootHandler,
     method : 'GET',
     path   : '/',
+  }
+
+  const restartRoute = {
+    handler: restartHandler,
+    method : 'GET',
+    path   : '/restart/',
   }
 
   const chatopsRoute = {
@@ -134,6 +162,7 @@ export async function startWeb (bot: Wechaty): Promise<void> {
   const routeList = [
     rootRoute,
     chatopsRoute,
+    restartRoute,
     wechatyBroadcastRoute,
   ]
 

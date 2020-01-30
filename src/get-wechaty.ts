@@ -23,7 +23,7 @@ export function getWechaty (name: string): Wechaty {
 
   const memory = getMemory(name)
 
-  wechaty = new Wechaty({
+  wechaty = Wechaty.instance({
     memory,
     name,
   })
