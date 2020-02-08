@@ -33,12 +33,12 @@
     "@types/raven": "^2.5.1",
     "@types/read-pkg-up": "^6.0.0",
     "brolog": "^1.6.5",
-    "finis": "^0.4.3",
+    "finis": "^0.4.4",
     "lru-cache": "^5.1.1",
     "moment": "^2.24.0",
     "read-pkg-up": "^7.0.1",
     "wechaty": "^0.30.9",
-    "wechaty-puppet-padplus": "^0.3.21"
+    "wechaty-puppet-padplus": "^0.3.23"
   },
   "devDependencies": {
     "@chatie/eslint-config": "^0.8.1",

@@ -26,15 +26,6 @@ export async function startFinis (wechaty: Wechaty): Promise<void> {
   bot.on('logout',  user => log.info('Finis', 'startFinis() bot %s logout', user))
 }
 
-const exceptionHandler: any = (err: Error, origin: any) => {
-  console.error(
-    `Caught exception:`, err,
-    `Exception origin:`, origin,
-  )
-}
-
-process.on('uncaughtException', exceptionHandler)
-
 /**
  *
  * SIGTERM
