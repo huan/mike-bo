@@ -26,6 +26,15 @@ export async function startFinis (wechaty: Wechaty): Promise<void> {
   bot.on('logout',  user => log.info('Finis', 'startFinis() bot %s logout', user))
 }
 
+const exceptionHandler: any = (err: Error, origin: any) => {
+  console.error(
+    `Caught exception:`, err,
+    `Exception origin:`, origin,
+  )
+}
+
+process.on('uncaughtException', exceptionHandler)
+
 /**
  *
  * SIGTERM
@@ -68,7 +77,7 @@ finis(async (code, signal) => {
     log.info('Finis', 'finis() hard exit')
     setImmediate(() => process.exit(code))
   }, 10 * 1000)
-  log.info('Finis', 'finis() setTimeoutprocess.exit(), 10 * 1000)')
+  log.info('Finis', 'finis() setTimeout(() => process.exit(%s)), 10 * 1000)', code)
 
   try {
     log.info('Finis', 'finis() setTimeout() going to exit with %d', code)
