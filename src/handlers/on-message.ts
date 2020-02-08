@@ -4,6 +4,7 @@ import {
   log,
   Message,
   Wechaty,
+  FileBox,
 }             from 'wechaty'
 
 import {
@@ -214,9 +215,9 @@ async function dingDong (
 
       const room = await wechaty.Room.find({ topic })
       if (room) {
-        const value = 'test' // await room.qrcode()
-        const qrcodePng = await wechaty.qrcodePng(value)
-        await message.say(qrcodePng)
+        const value = await room.qrcode()
+        const qrCodeFileBox = await FileBox.fromQRCode(value)
+        await message.say(qrCodeFileBox)
       } else {
         await message.say(`room not found for "${topic}"`)
       }
