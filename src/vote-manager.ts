@@ -362,7 +362,7 @@ export class VoteManager {
     const votersMentionText = await this.mentionTextFromContactIdList(payload.downIdList, room)
     // const announcement =
     const task = async () => {
-      await room.say`UNWELCOME GUEST CONFIRMED:\n[Dagger] ${target} [Cleaver]\n\nThank you [Rose] ${votersMentionText} [Rose] for voting for the community, we apprecate it.\n\nThanks for everyone in this room for respect our CODE OF CONDUCT.\n`
+      await room.say`UNWELCOME GUEST CONFIRMED:\n[Dagger] ${target} [Cleaver]\n\nThank you [Rose] ${votersMentionText} [Rose] for voting for the community, we apprecate it.\n\nThanks everyone in this room for respecting our CODE OF CONDUCT.\n`
       await room.wechaty.sleep(5 * 1000)
       await room.say`Removing ${target} out to this room ...`
       await room.wechaty.sleep(5 * 1000)
