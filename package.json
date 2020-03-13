@@ -1,6 +1,6 @@
 {
   "name": "mike-bo",
-  "version": "0.4.66",
+  "version": "0.4.67",
   "description": "Mike BO is an assistant bot work for Huan",
   "main": "index.js",
   "engines": {
