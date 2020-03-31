@@ -118,6 +118,18 @@ async function ctpStatus (
       const logoutText = moment(entry.logout || Date.now()).format('MMM Do HH:mm')
       reply += `\n${entry.name}\n${loginText}\n${logoutText}\n`
     }
+  } else if (cmd.match(/^whoru$/i)) {
+    const puppet = wechaty.puppet
+
+    const wtmp = Wtmp.instance()
+    const first = wtmp.first()
+    const time = moment(first.login).fromNow()
+
+    reply = [
+      `My name is ${wechaty.name()}, I borned at ${time}.`,
+      `My Wechaty is ${wechaty}@${wechaty.version()}.`,
+      `My puppet is ${puppet}@${puppet.version()}.`,
+    ].join('\n')
   } else {
     reply = 'unknown CTP command'
   }

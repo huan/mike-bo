@@ -10,7 +10,7 @@ import { startWeb }   from './start-web'
 async function main () {
   log.verbose('main', 'main()')
 
-  const name = process.env.WECHATY_NAME || 'heroku-wechaty'
+  const name = process.env.WECHATY_NAME || 'Mike BO'
 
   const bot = getWechaty(name)
 
@@ -21,9 +21,8 @@ async function main () {
     startWeb(bot),
   ])
 
-  while (bot.state.on()) {
-    await new Promise(resolve => setTimeout(resolve, 1000))
-  }
+  await bot.state.ready('off')
+
   return 0
 }
 

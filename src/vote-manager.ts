@@ -81,6 +81,8 @@ export class VoteManager {
   }
 
   private async validVote (message: Message): Promise<boolean> {
+    // log.verbose('VoteManager', 'validVote(%s)', message)
+
     const room = message.room()
     const from = message.from()
 
@@ -91,26 +93,32 @@ export class VoteManager {
     const topic = await room.topic()
     const isManaged = MANAGED_ROOM_TOPIC_REGEX_LIST.some(regex => regex.test(topic))
     if (!isManaged) {
+      log.silly('VoteManager', 'validVote() not a managed room')
       return false
     }
 
     const mentionList = await message.mentionList()
     if (!mentionList || mentionList.length === 0) {
+      log.silly('VoteManager', 'validVote() mentioned nobody, skipped')
       return false
     }
 
     for (const mention of mentionList) {
       if (mention.id === message.wechaty.userSelf().id) {
+        log.silly('VoteManager', 'validVote() mentioned the bot, skipped')
         return false
       }
     }
 
     const mentionText = await message.mentionText()
+    log.silly('VoteManager', 'validVote() mentionText="%s"', mentionText)
+
     const isVoteDown  = this.isVoteDown(mentionText)
     const isVoteUp    = this.isVoteUp(mentionText)
 
     const isVote      = isVoteDown || isVoteUp
     if (!isVote) {
+      log.silly('VoteManager', 'validVote() not a vote message, skipped')
       return false
     }
 
@@ -118,10 +126,12 @@ export class VoteManager {
   }
 
   private isVoteDown (text: string): boolean {
+    log.silly('VoteManager', 'isVoteDown(%s)', text)
     return VOTE_DOWN_EMOJI_LIST.includes(text)
   }
 
   private isVoteUp (text: string): boolean {
+    log.silly('VoteManager', 'isVoteUp(%s)', text)
     return VOTE_UP_EMOJI_LIST.includes(text)
   }
 
@@ -130,7 +140,7 @@ export class VoteManager {
    * @description Check whether the message is a vote message
    */
   public async checkVote (message: Message) {
-    log.verbose('VoteManager', 'checkVote(%s)', message)
+    // log.verbose('VoteManager', 'checkVote(%s)', message)
 
     const validVote = await this.validVote(message)
     if (!validVote) {
