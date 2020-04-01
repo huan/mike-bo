@@ -39,7 +39,7 @@
     "qrcode-terminal": "^0.12.0",
     "read-pkg-up": "^7.0.1",
     "wechaty": "^0.37.5",
-    "wechaty-puppet-hostie": "^0.3.5",
+    "wechaty-puppet-hostie": "^0.5.7",
     "wechaty-puppet-padplus": "^0.5.25"
   },
   "devDependencies": {
