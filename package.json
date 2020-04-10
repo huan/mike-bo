@@ -1,6 +1,6 @@
 {
   "name": "mike-bo",
-  "version": "0.4.68",
+  "version": "0.4.70",
   "description": "Mike BO is an assistant bot work for Huan",
   "main": "index.js",
   "engines": {
@@ -40,7 +40,7 @@
     "read-pkg-up": "^7.0.1",
     "wechaty": "^0.37.14",
     "wechaty-puppet-hostie": "^0.5.10",
-    "wechaty-puppet-padplus": "^0.5.25"
+    "wechaty-puppet-padplus": "^0.7.1"
   },
   "devDependencies": {
     "@chatie/eslint-config": "^0.8.1",
