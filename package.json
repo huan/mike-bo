@@ -14,7 +14,9 @@
     "test": "npm run lint && npm run test:unit",
     "test:smoke": "ts-node tests/fixtures/smoke-testing.ts",
     "test:unit": "blue-tape -r ts-node/register \"src/**/*.spec.ts\" \"src/*.spec.ts\" \"tests/*.spec.ts\" \"tests/**/*.spec.ts\"",
-    "lint:es": "eslint --ignore-pattern tests/fixtures/ '{bin,examples,scripts,src,tests}/**/*.ts'"
+    "lint:es": "eslint --ignore-pattern tests/fixtures/ '{bin,examples,scripts,src,tests}/**/*.ts'",
+    "snyk-protect": "snyk protect",
+    "prepublish": "npm run snyk-protect"
   },
   "repository": {
     "type": "git",
@@ -40,7 +42,8 @@
     "read-pkg-up": "^7.0.1",
     "wechaty": "^0.37.14",
     "wechaty-puppet-hostie": "^0.7.1",
-    "wechaty-puppet-padplus": "^0.7.1"
+    "wechaty-puppet-padplus": "^0.7.1",
+    "snyk": "^1.316.1"
   },
   "devDependencies": {
     "@chatie/eslint-config": "^0.8.1",
@@ -52,5 +55,6 @@
     "scripts": {
       "pre-push": "npx git-scripts-pre-push"
     }
-  }
+  },
+  "snyk": true
 }
