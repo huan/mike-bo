@@ -3,8 +3,8 @@ import {
 }                    from './config'
 
 import { getWechaty } from './get-wechaty'
-import { startBot }   from './start-bot'
-import { startFinis } from './start-finis'
+import { setupBot }   from './setup-bot'
+import { startFinis } from './setup-finis'
 import { startWeb }   from './start-web'
 
 async function main () {
@@ -14,12 +14,10 @@ async function main () {
 
   const bot = getWechaty(name)
 
-  await Promise.all([
-    bot.start(),
-    startBot(bot),
-    startFinis(bot),
-    startWeb(bot),
-  ])
+  await startFinis(bot)
+  await setupBot(bot)
+  await bot.start()
+  await startWeb(bot)
 
   await bot.state.ready('off')
 

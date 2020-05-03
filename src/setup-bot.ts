@@ -13,7 +13,7 @@ import {
 }                  from './config'
 import { Wtmp }     from './wtmp'
 
-export async function startBot (wechaty: Wechaty): Promise<void> {
+export async function setupBot (wechaty: Wechaty): Promise<void> {
   log.verbose('startBot', 'startBot(%s)', wechaty)
 
   wechaty
@@ -40,18 +40,10 @@ export async function startBot (wechaty: Wechaty): Promise<void> {
         logout    : '[月亮]',
         ready     : '[拳头]',
       },
-      intervalSeconds: 60 * 60, // 1 hour
+      intervalSeconds: 60 * 60,       // 1 hour
+      room: '17376996519@chatroom',   // 'ChatOps - Heartbeat'
     }),
   )
-
-  // const heartbeat = (emoji: string) => {
-  //   return () => Chatops.instance().heartbeat(emoji)
-  // }
-  // const ONE_HOUR = 60 * 60 * 1000
-  // setInterval(heartbeat('[爱心]'), ONE_HOUR)
-  // wechaty.on('login', heartbeat(`[太阳] ${wechaty.name()}`))
-  // wechaty.on('ready', heartbeat(`[拳头] ${wechaty.name()}`))
-  // wechaty.on('logout', heartbeat(`[月亮] ${wechaty.name()}`))
 
   const wtmp = Wtmp.instance()
   const loginWtmp = (user: Contact) => wtmp.login(user.name())
