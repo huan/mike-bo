@@ -38,9 +38,10 @@
     "moment": "^2.24.0",
     "qrcode-terminal": "^0.12.0",
     "read-pkg-up": "^7.0.1",
-    "wechaty": "^0.37.14",
+    "wechaty": "^0.39.24",
+    "wechaty-plugin-contrib": "^0.2.7",
     "wechaty-puppet-hostie": "^0.7.1",
-    "wechaty-puppet-padplus": "^0.7.1"
+    "wechaty-puppet-padplus": "^0.7.15"
   },
   "devDependencies": {
     "@chatie/eslint-config": "^0.8.1",
