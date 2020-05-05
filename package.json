@@ -33,6 +33,7 @@
     "@types/raven": "^2.5.1",
     "@types/read-pkg-up": "^6.0.0",
     "brolog": "^1.6.5",
+    "dotenv": "^8.2.0",
     "finis": "^0.4.3",
     "lru-cache": "^5.1.1",
     "moment": "^2.24.0",
