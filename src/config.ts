@@ -13,7 +13,8 @@ export {
   log,
 }               from 'brolog'
 
-require('dotenv').config()
+import dotenv from 'dotenv'
+dotenv.config()
 
 const pkg = readPkgUp.sync({ cwd: __dirname })!.packageJson
 export const VERSION = pkg.version
