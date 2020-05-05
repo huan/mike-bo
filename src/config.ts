@@ -7,14 +7,15 @@
 /**
  * VERSION
  */
-import readPkgUp from 'read-pkg-up'
+import readPkgUp  from 'read-pkg-up'
+import dotenv     from 'dotenv'
+
+dotenv.config()
 
 export {
   log,
 }               from 'brolog'
 
-import dotenv from 'dotenv'
-dotenv.config()
 
 const pkg = readPkgUp.sync({ cwd: __dirname })!.packageJson
 export const VERSION = pkg.version
