@@ -4,6 +4,7 @@ import {
   log,
   Message,
   Wechaty,
+  FileBox,
 }             from 'wechaty'
 
 import {
@@ -208,15 +209,14 @@ async function dingDong (
 
       const urlLink = await wechaty.UrlLink.create(url)
       await message.say(urlLink)
-    } else if (text.match(/^#roomQrcode /i)) {
-      const topic = text.replace(/^#roomQrcode /i, '')
-      log.info('on-message', 'dingDong() roomQrcode(%s)', topic)
+    } else if (text.match(/^#roomQRCode /i)) {
+      const topic = text.replace(/^#roomQRCode /i, '')
+      log.info('on-message', 'dingDong() roomQRCode(%s)', topic)
 
       const room = await wechaty.Room.find({ topic })
       if (room) {
-        const value = 'test' // await room.qrcode()
-        const qrcodePng = await wechaty.qrcodePng(value)
-        await message.say(qrcodePng)
+        const value = 'test' // await room.qrCode()
+        await message.say(FileBox.fromQRCode(value))
       } else {
         await message.say(`room not found for "${topic}"`)
       }
