@@ -6,7 +6,7 @@ import {
 import {
   DingDong,
   Heartbeat,
-  Chatops,
+  ChatOps,
 }                   from 'wechaty-plugin-contrib'
 
 import {
@@ -45,7 +45,7 @@ export async function setupBot (wechaty: Wechaty): Promise<void> {
       intervalSeconds: 60 * 60,       // 1 hour
       room: '17376996519@chatroom',   // 'ChatOps - Heartbeat'
     }),
-    Chatops({
+    ChatOps({
       at: true,
       dm: true,
       room: CHATOPS_ROOM_ID,
