@@ -30,9 +30,6 @@ export default async function onMessage (
     log.error('on-message', 'Failed to check vote for the message: %s', e)
   }
 
-  await directMessage(message)
-  await mentionMessage(message)
-
   await ctpStatus(this, message)
 
   await dingDong(this, message)
@@ -136,34 +133,6 @@ async function ctpStatus (
 
   await message.say(reply)
   await wechaty.sleep(1)
-}
-
-async function directMessage (
-  message: Message,
-): Promise<void> {
-  const room = message.room()
-  if (room) {
-    return
-  }
-
-  // direct message
-  await Chatops.instance().say(message)
-}
-
-async function mentionMessage (
-  message: Message,
-): Promise<void> {
-  const room = message.room()
-  if (!room) {
-    return
-  }
-
-  const mentionSelf = await message.mentionSelf()
-  if (!mentionSelf) {
-    return
-  }
-
-  await Chatops.instance().say(message)
 }
 
 async function dingDong (
