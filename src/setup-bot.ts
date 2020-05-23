@@ -4,12 +4,16 @@ import {
 }                   from 'wechaty'
 
 import {
+  DingDong,
+  Heartbeat,
+}                   from 'wechaty-plugin-contrib'
+
+import {
   log,
 }                  from './config'
-import { Chatops }  from './chatops'
 import { Wtmp }     from './wtmp'
 
-export async function startBot (wechaty: Wechaty): Promise<void> {
+export async function setupBot (wechaty: Wechaty): Promise<void> {
   log.verbose('startBot', 'startBot(%s)', wechaty)
 
   wechaty
@@ -24,14 +28,22 @@ export async function startBot (wechaty: Wechaty): Promise<void> {
     .on('room-join',    './handlers/on-room-join')
     .on('room-leave',   './handlers/on-room-leave')
 
-  const heartbeat = (emoji: string) => {
-    return () => Chatops.instance().heartbeat(emoji)
-  }
-  const ONE_HOUR = 60 * 60 * 1000
-  setInterval(heartbeat('💖'), ONE_HOUR)
-  wechaty.on('login', heartbeat('🙋'))
-  wechaty.on('ready', heartbeat('💪'))
-  wechaty.on('logout', heartbeat('😪'))
+  wechaty.use(
+    DingDong({
+      at   : true,
+      room : false,
+    }),
+    Heartbeat({
+      emoji: {
+        heartbeat : '[爱心]',
+        login     : '[太阳]',
+        logout    : '[月亮]',
+        ready     : '[拳头]',
+      },
+      intervalSeconds: 60 * 60,       // 1 hour
+      room: '17376996519@chatroom',   // 'ChatOps - Heartbeat'
+    }),
+  )
 
   const wtmp = Wtmp.instance()
   const loginWtmp = (user: Contact) => wtmp.login(user.name())

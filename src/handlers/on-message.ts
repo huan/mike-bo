@@ -118,6 +118,18 @@ async function ctpStatus (
       const logoutText = moment(entry.logout || Date.now()).format('MMM Do HH:mm')
       reply += `\n${entry.name}\n${loginText}\n${logoutText}\n`
     }
+  } else if (cmd.match(/^whoru$/i)) {
+    const puppet = wechaty.puppet
+
+    const wtmp = Wtmp.instance()
+    const first = wtmp.first()
+    const time = moment(first.login).fromNow()
+
+    reply = [
+      `My name is ${wechaty.name()}, I borned at ${time}.`,
+      `My Wechaty is ${wechaty}@${wechaty.version()}.`,
+      `My puppet is ${puppet}@${puppet.version()}.`,
+    ].join('\n')
   } else {
     reply = 'unknown CTP command'
   }
@@ -215,8 +227,9 @@ async function dingDong (
 
       const room = await wechaty.Room.find({ topic })
       if (room) {
-        const value = 'test' // await room.qrCode()
-        await message.say(FileBox.fromQRCode(value))
+        const value = await room.qrcode()
+        const qrCodeFileBox = await FileBox.fromQRCode(value)
+        await message.say(qrCodeFileBox)
       } else {
         await message.say(`room not found for "${topic}"`)
       }

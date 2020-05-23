@@ -2,7 +2,7 @@
 
 [![Powered by Wechaty](https://img.shields.io/badge/Powered%20By-Wechaty-blue.svg)](https://github.com/chatie/wechaty)
 [![Build Status](https://travis-ci.com/huan/mike-bo.svg?branch=master)](https://travis-ci.com/huan/mike-bo)
-[![Greenkeeper badge](https://badges.greenkeeper.io/huan/mike-bo.svg)](https://greenkeeper.io/)
+
 
 [![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy)
 

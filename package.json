@@ -1,18 +1,18 @@
 {
   "name": "mike-bo",
-  "version": "0.4.55",
+  "version": "0.4.77",
   "description": "Mike BO is an assistant bot work for Huan",
   "main": "index.js",
   "engines": {
     "node": "10.4.1"
   },
   "scripts": {
-    "build": "wechaty-puppet-install",
     "dev": "WECHATY_PUPPET=wechaty-puppet-padplus ts-node src/main.ts",
     "lint": "npm run lint:es && npm run lint:ts",
     "lint:ts": "tsc --noEmit",
-    "start": "echo -e '\n\nDo not use `npm start` because its buggy with SIGTERM\n\nUse Procfile instead.\n\n' && exit 1",
+    "start": "export $(xargs < .env) && ts-node src/main.ts",
     "test": "npm run lint && npm run test:unit",
+    "test:smoke": "ts-node tests/fixtures/smoke-testing.ts",
     "test:unit": "blue-tape -r ts-node/register \"src/**/*.spec.ts\" \"src/*.spec.ts\" \"tests/*.spec.ts\" \"tests/**/*.spec.ts\"",
     "lint:es": "eslint --ignore-pattern tests/fixtures/ '{bin,examples,scripts,src,tests}/**/*.ts'"
   },
@@ -27,19 +27,22 @@
   },
   "homepage": "https://github.com/chatie/heroku-wechaty-getting-started#readme",
   "dependencies": {
-    "@chatie/tsconfig": "^0.6.1",
-    "@hapi/hapi": "^18.3.1",
-    "@types/hapi__hapi": "^18.2.5",
+    "@chatie/tsconfig": "^0.10.1",
+    "@hapi/hapi": "^18.4.0",
+    "@types/hapi__hapi": "^19.0.1",
     "@types/raven": "^2.5.1",
     "@types/read-pkg-up": "^6.0.0",
     "brolog": "^1.6.5",
     "dotenv": "^8.2.0",
-    "finis": "^0.4.3",
+    "finis": "^0.4.4",
     "lru-cache": "^5.1.1",
     "moment": "^2.24.0",
+    "qrcode-terminal": "^0.12.0",
     "read-pkg-up": "^7.0.1",
-    "wechaty": "^0.29.42",
-    "wechaty-puppet-padplus": "^0.3.11"
+    "wechaty": "^0.39.25",
+    "wechaty-plugin-contrib": "^0.2.13",
+    "wechaty-puppet-hostie": "^0.7.1",
+    "wechaty-puppet-padplus": "^0.7.15"
   },
   "devDependencies": {
     "@chatie/eslint-config": "^0.8.1",

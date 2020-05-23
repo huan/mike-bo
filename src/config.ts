@@ -29,7 +29,7 @@ export const PORT = process.env.PORT || 8788
  * Wechaty Developers' Home
  */
 export const WECHATY_DEVELOPERS_HOME_ROOM_ID_LIST = [
-  '24113855649@chatroom',   // Wechaty Developers' Room
+  '24113855649@chatroom',   // Wechaty Developers' Room Next
   '17275396976@chatroom',   // Wechaty Developers' Room 0
   '7582163093@chatroom',    // Wechaty Developers' Room 1
   '5729603967@chatroom',    // Wechaty Developers' Room 2

@@ -3,27 +3,24 @@ import {
 }                    from './config'
 
 import { getWechaty } from './get-wechaty'
-import { startBot }   from './start-bot'
-import { startFinis } from './start-finis'
+import { setupBot }   from './setup-bot'
+import { startFinis } from './setup-finis'
 import { startWeb }   from './start-web'
 
 async function main () {
   log.verbose('main', 'main()')
 
-  const name = process.env.WECHATY_NAME || 'heroku-wechaty'
+  const name = process.env.WECHATY_NAME || 'Mike BO'
 
   const bot = getWechaty(name)
 
-  await Promise.all([
-    bot.start(),
-    startBot(bot),
-    startFinis(bot),
-    startWeb(bot),
-  ])
+  await startFinis(bot)
+  await setupBot(bot)
+  await bot.start()
+  await startWeb(bot)
 
-  while (bot.state.on()) {
-    await new Promise(resolve => setTimeout(resolve, 1000))
-  }
+  await bot.state.ready('off')
+
   return 0
 }
 
