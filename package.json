@@ -41,7 +41,7 @@
     "read-pkg-up": "^7.0.1",
     "wechaty": "^0.39.25",
     "wechaty-plugin-contrib": "^0.4.2",
-    "wechaty-puppet-hostie": "^0.7.1",
+    "wechaty-puppet-hostie": "^0.8.3",
     "wechaty-puppet-padplus": "^0.7.15"
   },
   "devDependencies": {
