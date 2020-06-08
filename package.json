@@ -39,7 +39,7 @@
     "moment": "^2.24.0",
     "qrcode-terminal": "^0.12.0",
     "read-pkg-up": "^7.0.1",
-    "wechaty": "^0.39.25",
+    "wechaty": "^0.40.6",
     "wechaty-plugin-contrib": "^0.4.2",
     "wechaty-puppet-hostie": "^0.8.3",
     "wechaty-puppet-padplus": "^0.7.15"
