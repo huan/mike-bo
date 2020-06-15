@@ -1,7 +1,7 @@
 import Hapi, { Request, ResponseToolkit }    from '@hapi/hapi'
 import {
   Wechaty,
-  UrlLink,
+  // UrlLink,
 }               from 'wechaty'
 import {
   UrlLinkPayload,
@@ -49,13 +49,13 @@ async function wechatyBroadcastHandler (
     return h.response(`payload illegal: "${JSON.stringify(payload)}"`)
   }
 
-  const urlLink = new UrlLink(payload)
+  // const urlLink = new UrlLink(payload)
 
-  Chatops
-    .instance()
-    .wechatyBroadcast(urlLink)
-    .then(() => log.verbose('start-web', 'wechatyBroadcastHandler() queued.'))
-    .catch(e => log.error('start-web', 'wechatyBroadcastHandler() rejection: %s', e))
+  // Chatops
+  //   .instance()
+  // .wechatyBroadcast(urlLink)
+  // .then(() => log.verbose('start-web', 'wechatyBroadcastHandler() queued.'))
+  // .catch(e => log.error('start-web', 'wechatyBroadcastHandler() rejection: %s', e))
 
   const html = [
     'webhook succeed!',

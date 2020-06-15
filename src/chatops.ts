@@ -99,16 +99,6 @@ export class Chatops {
     )
   }
 
-  public async wechatyBroadcast (info: string | UrlLink) {
-    for (const roomId of WECHATY_DEVELOPERS_HOME_ROOM_ID_LIST) {
-      try {
-        await this.roomMessage(roomId, info)
-      } catch (e) {
-        log.error('Chatops', 'wechatyBroadcast() rejection: %s', e)
-      }
-    }
-  }
-
   public async wechatyAnnounce (announcement: string) {
     for (const roomId of WECHATY_DEVELOPERS_HOME_ROOM_ID_LIST) {
       const room = this.bot.Room.load(roomId)

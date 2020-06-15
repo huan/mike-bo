@@ -1,55 +1,24 @@
 import {
   Wechaty,
   Contact,
+  log,
 }                   from 'wechaty'
 
-import {
-  DingDong,
-  Heartbeat,
-  ChatOps,
-}                   from 'wechaty-plugin-contrib'
-
-import {
-  log,
-  CHATOPS_ROOM_ID,
-}                   from './config'
 import { Wtmp }     from './wtmp'
+
+import { EventHotHandlerPlugin } from './plugins/event-hot-handler'
+import { DingDongPlugin } from './plugins/ding-dong'
+import { HeartbeatPlugin } from './plugins/heartbeat'
+import { ChatOpsPlugin } from './plugins/chatops'
 
 export async function setupBot (wechaty: Wechaty): Promise<void> {
   log.verbose('startBot', 'startBot(%s)', wechaty)
 
-  wechaty
-    .on('scan',         './handlers/on-scan')
-    .on('error',        './handlers/on-error')
-    .on('friendship',   './handlers/on-friendship')
-    .on('logout',       './handlers/on-logout')
-    .on('login',        './handlers/on-login')
-    .on('message',      './handlers/on-message')
-    .on('room-topic',   './handlers/on-room-topic')
-    .on('room-invite',  './handlers/on-room-invite')
-    .on('room-join',    './handlers/on-room-join')
-    .on('room-leave',   './handlers/on-room-leave')
-
   wechaty.use(
-    DingDong({
-      at   : true,
-      room : false,
-    }),
-    Heartbeat({
-      emoji: {
-        heartbeat : '[爱心]',
-        login     : '[太阳]',
-        logout    : '[月亮]',
-        ready     : '[拳头]',
-      },
-      intervalSeconds: 60 * 60,       // 1 hour
-      room: '17376996519@chatroom',   // 'ChatOps - Heartbeat'
-    }),
-    ChatOps({
-      at: true,
-      dm: true,
-      room: CHATOPS_ROOM_ID,
-    }),
+    DingDongPlugin,
+    HeartbeatPlugin,
+    ChatOpsPlugin,
+    EventHotHandlerPlugin,
   )
 
   const wtmp = Wtmp.instance()
