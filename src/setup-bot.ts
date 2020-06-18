@@ -10,6 +10,7 @@ import { EventHotHandlerPlugin } from './plugins/event-hot-handler'
 import { DingDongPlugin } from './plugins/ding-dong'
 import { HeartbeatPlugin } from './plugins/heartbeat'
 import { ChatOpsPlugin } from './plugins/chatops'
+import { RoomInvitationAccepterPlugin } from './plugins/room-invitation-accepter'
 
 export async function setupBot (wechaty: Wechaty): Promise<void> {
   log.verbose('startBot', 'startBot(%s)', wechaty)
@@ -19,6 +20,7 @@ export async function setupBot (wechaty: Wechaty): Promise<void> {
     HeartbeatPlugin,
     ChatOpsPlugin,
     EventHotHandlerPlugin,
+    RoomInvitationAccepterPlugin,
   )
 
   const wtmp = Wtmp.instance()

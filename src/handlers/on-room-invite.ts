@@ -16,12 +16,5 @@ export default async function onRoomInvite (
 
   const topic = await roomInvitation.topic()
   const inviter = await roomInvitation.inviter()
-
-  await Chatops.instance().queue(() => {
-    Chatops.instance().say(`recreived room invitation from ${inviter} to ${topic}`)
-      .then(() => roomInvitation.accept())
-      .then(() => Chatops.instance().say('accepted.'))
-      .catch(e => log.error('on-room-invite', 'onRoomInvite() queue() rejection %s', e))
-  })
-
+  await Chatops.instance().say(`received room invitation from ${inviter} to ${topic}`)
 }
