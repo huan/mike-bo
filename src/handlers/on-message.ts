@@ -210,7 +210,7 @@ async function dingDong (
         const output = `translate output: "${translated}"`
 
         if (room) {
-          await message.say(output, from)
+          await room.say(output, from)
         } else {
           await message.say(output)
         }
@@ -238,7 +238,7 @@ async function ctpTranslate (
   await room.ready()
   await ctpMaster.ready()
 
-  return new Promise(async (resolve, reject) => {
+  return new Promise((resolve, reject) => {
 
     const onCtpMessage = async (message: Message) => {
       log.verbose('on-message', 'ctpTranslate() onCtpMessage(%s)', message)
@@ -271,7 +271,7 @@ async function ctpTranslate (
     }
 
     room.addListener('message', onCtpMessage)
-    await room.say(text, ctpMaster)
+    room.say(text, ctpMaster).catch(() => {})
     setTimeout(timeoutFn, 15 * 1000)
   })
 }
