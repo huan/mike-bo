@@ -83,8 +83,10 @@ export class Chatops {
           something = await info.toUrlLink()
           break
         default:
-          const typeName = Message.Type[info.type()]
-          something = `message type: ${typeName}`
+          {
+            const typeName = Message.Type[info.type()]
+            something = `message type: ${typeName}`
+          }
           break
       }
     } else if (info instanceof UrlLink) {

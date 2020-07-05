@@ -40,7 +40,7 @@ async function wechatyBroadcastHandler (
       MIKEBO_SECRET,
       payload.mikeboSecret,
     )
-    return h.response(`mikebo secret illegal: please make sure the MIKEBO_SECRET env variable is the same as the QueryString mikeboSecret.`)
+    return h.response('mikebo secret illegal: please make sure the MIKEBO_SECRET env variable is the same as the QueryString mikeboSecret.')
   }
 
   if (!payload.description || !payload.thumbnailUrl  || !payload.title || !payload.url) {
