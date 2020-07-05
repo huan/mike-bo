@@ -115,7 +115,7 @@ export async function startWeb (bot: Wechaty): Promise<void> {
         '<a href="http://goqr.me/" target="_blank">http://goqr.me/</a><br />',
         '\n\n',
         '<image src="',
-        'https://api.qrserver.com/v1/create-qr-code/?data=',
+        'https://wechaty.github.io/qrcode/',
         encodeURIComponent(qrcodeValue),
         '">',
       ].join('')
