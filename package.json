@@ -35,7 +35,7 @@
     "brolog": "^1.12.4",
     "dotenv": "^8.2.0",
     "finis": "^0.4.4",
-    "lru-cache": "^5.1.1",
+    "lru-cache": "^6.0.0",
     "moment": "^2.27.0",
     "read-pkg-up": "^7.0.1",
     "wechaty": "^0.41.24",
