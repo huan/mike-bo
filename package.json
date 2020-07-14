@@ -35,7 +35,7 @@
     "lru-cache": "^6.0.0",
     "moment": "^2.27.0",
     "read-pkg-up": "^7.0.1",
-    "wechaty": "^0.43.4",
+    "wechaty": "^0.43.5",
     "wechaty-plugin-contrib": "^0.14.2",
     "wechaty-vorpal": "^0.6.5",
     "wechaty-vorpal-contrib": "^0.6.7"
