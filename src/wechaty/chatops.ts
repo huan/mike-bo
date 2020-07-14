@@ -2,7 +2,10 @@ import {
   Room,
   log,
 }               from 'wechaty'
-import { types } from 'wechaty-plugin-contrib'
+import {
+  types,
+  talkers,
+}               from 'wechaty-plugin-contrib'
 
 import { CHATOPS_ROOM_ID } from '../database'
 
@@ -17,7 +20,7 @@ async function chatops (msg: types.SayableMessage): Promise<void> {
     room = getWechaty().Room.load(CHATOPS_ROOM_ID)
   }
 
-  await room.say(msg)
+  await talkers.roomTalker(msg)(room)
 }
 
 export { chatops }
