@@ -1,11 +1,13 @@
 import { finis }    from 'finis'
-import { Wechaty }  from 'wechaty'
+import {
+  Wechaty,
+  log,
+}           from 'wechaty'
 
 import {
-  Chatops,
-}             from './chatops'
+  chatops,
+}             from './wechaty/mod'
 import {
-  log,
   VERSION,
 }             from './config'
 
@@ -22,7 +24,7 @@ export async function startFinis (wechaty: Wechaty): Promise<void> {
   }
   bot = wechaty
 
-  bot.on('login',   _ => Chatops.instance().say(LOGIN_ANNOUNCEMENT))
+  bot.on('login',   _ => chatops(LOGIN_ANNOUNCEMENT))
   bot.on('logout',  user => log.info('Finis', 'startFinis() bot %s logout', user))
 }
 
@@ -51,7 +53,7 @@ finis(async (code, signal) => {
     log.info('Finis', 'finis() announce exiting')
     try {
       // log.level('silly')
-      await Chatops.instance().say(EXIT_ANNOUNCEMENT)
+      await chatops(EXIT_ANNOUNCEMENT)
       log.info('startFinis', 'finis() chatops() done')
       await bot.say(EXIT_ANNOUNCEMENT)
       log.info('startFinis', 'finis() bot.say() done')

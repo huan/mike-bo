@@ -7,14 +7,6 @@ import {
   FileBox,
 }             from 'wechaty'
 
-import {
-  CHATOPS_ROOM_ID,
-}                   from '../config'
-
-import {
-  Chatops,
-}           from '../chatops'
-
 import { Wtmp } from '../wtmp'
 
 export default async function onMessage (
@@ -26,43 +18,6 @@ export default async function onMessage (
   await ctpStatus(this, message)
 
   await dingDong(this, message)
-  await adminRoom(message)
-
-}
-
-async function adminRoom (
-  message: Message,
-): Promise<void> {
-  if (message.self()) {
-    return
-  }
-
-  const room = message.room()
-  if (!room) {
-    return
-  }
-
-  // ChatOps - Mike BO
-  if (room.id !== CHATOPS_ROOM_ID) {
-    return
-  }
-
-  const text = await message.mentionText()
-  if (!text.match(/^#\w+/)) {
-    return
-  }
-
-  const cmd = text.replace(/^#/, '')
-
-  let reply = 'unknown cmd'
-  if (cmd.match(/^wechatyAnnounce /i)) {
-    const announcement = cmd.replace(/^wechatyAnnounce /, '')
-    await Chatops.instance()
-      .wechatyAnnounce(announcement)
-    reply = 'announced.'
-  }
-
-  await message.say(reply)
 }
 
 async function ctpStatus (
@@ -157,32 +112,6 @@ async function dingDong (
   if (type === Message.Type.Text) {
     if (text.match(/^#ding$/i)) {
       await message.say('dong')
-    } else if (text.match(/^#findRoom /i)) {
-      const topic = text.replace(/^#findRoom /i, '')
-      log.info('on-message', 'dingDong() findRoom(%s)', topic)
-
-      const room = await wechaty.Room.find({ topic })
-      if (room) {
-        await message.say(`room id: "${room.id}"`)
-      } else {
-        await message.say(`room not found for "${topic}"`)
-      }
-    } else if (text.match(/^#findContact /i)) {
-      const name = text.replace(/^#findContact /i, '')
-      log.info('on-message', 'dingDong() findContact(%s)', name)
-
-      const contact = await wechaty.Contact.find({ name })
-      if (contact) {
-        await message.say(`contact id: "${contact.id}"`)
-      } else {
-        await message.say(`contACT not found for "${name}"`)
-      }
-    } else if (text.match(/^#card /i)) {
-      const url = text.replace(/^#card /i, '')
-      log.info('on-message', 'dingDong() card(%s)', url)
-
-      const urlLink = await wechaty.UrlLink.create(url)
-      await message.say(urlLink)
     } else if (text.match(/^#roomQRCode /i)) {
       const topic = text.replace(/^#roomQRCode /i, '')
       log.info('on-message', 'dingDong() roomQRCode(%s)', topic)

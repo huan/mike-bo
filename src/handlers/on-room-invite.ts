@@ -4,9 +4,7 @@ import {
   Wechaty,
 }                   from 'wechaty'
 
-import {
-  Chatops,
-}                 from '../chatops'
+import { chatops } from '../wechaty/mod'
 
 export default async function onRoomInvite (
   this           : Wechaty,
@@ -16,5 +14,5 @@ export default async function onRoomInvite (
 
   const topic = await roomInvitation.topic()
   const inviter = await roomInvitation.inviter()
-  await Chatops.instance().say(`received room invitation from ${inviter} to ${topic}`)
+  await chatops(`received room invitation from ${inviter} to ${topic}`)
 }

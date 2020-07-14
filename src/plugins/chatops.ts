@@ -1,9 +1,9 @@
 import { ChatOps } from 'wechaty-plugin-contrib'
 
-import { CHATOPS_ROOM_ID } from '../config'
+import { CHATOPS_ROOM_ID } from '../database'
 
 export const ChatOpsPlugin = ChatOps({
-  at: true,
-  dm: true,
-  room: CHATOPS_ROOM_ID,
+  contact : true,
+  mention : true,
+  room    : CHATOPS_ROOM_ID,
 })

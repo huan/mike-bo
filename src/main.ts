@@ -1,11 +1,11 @@
 import {
   log,
-}                    from './config'
+}                    from 'wechaty'
 
-import { getWechaty } from './get-wechaty'
-import { setupBot }   from './setup-bot'
+import { getWechaty } from './wechaty/mod'
+import { startWeb }   from './web/mod'
+
 import { startFinis } from './setup-finis'
-import { startWeb }   from './start-web'
 
 async function main () {
   log.verbose('main', 'main()')
@@ -15,10 +15,9 @@ async function main () {
   const bot = getWechaty(name)
 
   await startFinis(bot)
-  await setupBot(bot)
-  await bot.start()
   await startWeb(bot)
 
+  await bot.start()
   await bot.state.ready('off')
 
   return 0
