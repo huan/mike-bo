@@ -38,7 +38,7 @@
     "wechaty": "^0.43.5",
     "wechaty-plugin-contrib": "^0.14.2",
     "wechaty-vorpal": "^0.6.5",
-    "wechaty-vorpal-contrib": "^0.6.7"
+    "wechaty-vorpal-contrib": "^0.6.18"
   },
   "devDependencies": {
     "@chatie/eslint-config": "^0.11.5",
