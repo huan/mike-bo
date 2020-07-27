@@ -1,5 +1,7 @@
 import { Heartbeat } from 'wechaty-plugin-contrib'
 
+import { HEARTBEAT_ROOM_ID } from '../database'
+
 export const HeartbeatPlugin = Heartbeat({
   emoji: {
     heartbeat : '[爱心]',
@@ -8,5 +10,5 @@ export const HeartbeatPlugin = Heartbeat({
     ready     : '[拳头]',
   },
   intervalSeconds: 60 * 60,       // 1 hour
-  room: '17376996519@chatroom',   // 'ChatOps - Heartbeat'
+  room: HEARTBEAT_ROOM_ID,
 })
