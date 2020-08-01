@@ -1,3 +1,5 @@
+import './config' // load .env
+
 import {
   log,
 }                    from 'wechaty'
