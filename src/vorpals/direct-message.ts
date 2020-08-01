@@ -7,8 +7,6 @@ import {
   Whoru,
 }                         from 'wechaty-vorpal-contrib'
 
-const hackerNews = require('vorpal-hacker-news')
-
 const dmConfig: WechatyVorpalConfig = {
   contact : true,
   room    : false,
@@ -17,11 +15,6 @@ const dmConfig: WechatyVorpalConfig = {
   use: [
     Whoru(),
     Version(),
-    /**
-     * https://github.com/vorpaljs/vorpal-hacker-news
-     *  hacker-news --length 3
-     */
-    hackerNews,
   ],
 }
 
