@@ -4,7 +4,8 @@ import {
   log,
 }                 from 'wechaty'
 
-import { pluginList } from '../plugins/mod'
+import { pluginList }       from '../plugins/mod'
+import { vorpalPluginList } from '../vorpals/mod'
 
 import { Wtmp }     from '../wtmp'
 
@@ -31,7 +32,10 @@ export function getWechaty (name?: string): Wechaty {
     name,
   })
 
-  wechaty.use(pluginList)
+  wechaty.use(
+    ...pluginList,
+    ...vorpalPluginList,
+  )
 
   const wtmp = Wtmp.instance()
   const loginWtmp = (user: Contact) => wtmp.login(user.name())
