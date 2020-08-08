@@ -34,7 +34,7 @@
     "finis": "^0.4.4",
     "moment": "^2.27.0",
     "read-pkg-up": "^7.0.1",
-    "wechaty": "^0.47.1",
+    "wechaty": "^0.47.5",
     "wechaty-plugin-contrib": "^0.14.12",
     "wechaty-vorpal": "^0.6.11",
     "wechaty-vorpal-contrib": "^0.6.49"
