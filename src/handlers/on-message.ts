@@ -1,5 +1,3 @@
-import moment from 'moment'
-
 import {
   log,
   Message,
@@ -7,7 +5,7 @@ import {
   FileBox,
 }             from 'wechaty'
 
-import { Wtmp } from '../wtmp'
+// import { Wtmp } from '../wtmp'
 
 export default async function onMessage (
   this    : Wechaty,
@@ -15,72 +13,7 @@ export default async function onMessage (
 ): Promise<void> {
   log.info('on-message', 'onMessage(%s)', message)
 
-  await ctpStatus(this, message)
-
   await dingDong(this, message)
-}
-
-async function ctpStatus (
-  wechaty: Wechaty,
-  message: Message,
-): Promise<void> {
-  if (message.self()) {
-    return
-  }
-
-  const room = message.room()
-  if (!room) {
-    return
-  }
-
-  // ChatOps - CTP Status
-  const CTP_STATUS_ROOM_ID = '17962906510@chatroom'
-  if (room.id !== CTP_STATUS_ROOM_ID) {
-    return
-  }
-
-  const text = await message.mentionText()
-  if (!text.match(/^#\w+/)) {
-    return
-  }
-
-  const cmd = text.replace(/^#/, '')
-
-  let reply
-  if (cmd.match(/^ding$/i)) {
-    reply = 'dong'
-  } else if (cmd.match(/^uptime$/i)) {
-    const wtmp = Wtmp.instance()
-    const first = wtmp.first()
-    const time = moment(first.login).fromNow()
-    reply = `I'm online since ${time}`
-  } else if (cmd.match(/^last$/i)) {
-    const wtmp = Wtmp.instance()
-    const list = wtmp.list()
-    reply = ''
-    for (const entry of list) {
-      const loginText = moment(entry.login).format('MMM Do HH:mm')
-      const logoutText = moment(entry.logout || Date.now()).format('MMM Do HH:mm')
-      reply += `\n${entry.name}\n${loginText}\n${logoutText}\n`
-    }
-  } else if (cmd.match(/^whoru$/i)) {
-    const puppet = wechaty.puppet
-
-    const wtmp = Wtmp.instance()
-    const first = wtmp.first()
-    const time = moment(first.login).fromNow()
-
-    reply = [
-      `My name is ${wechaty.name()}, I borned at ${time}.`,
-      `My Wechaty is ${wechaty}@${wechaty.version()}.`,
-      `My puppet is ${puppet}@${puppet.version()}.`,
-    ].join('\n')
-  } else {
-    reply = 'unknown CTP command'
-  }
-
-  await message.say(reply)
-  await wechaty.sleep(1)
 }
 
 async function dingDong (

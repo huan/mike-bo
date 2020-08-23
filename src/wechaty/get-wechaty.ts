@@ -1,13 +1,12 @@
 import {
   Wechaty,
-  Contact,
   log,
 }                 from 'wechaty'
 
 import { pluginList }       from '../plugins/mod'
 import { vorpalPluginList } from '../vorpals/mod'
 
-import { Wtmp }     from '../wtmp'
+// import { Wtmp }     from '../wtmp'
 
 import {
   getMemory,
@@ -37,11 +36,11 @@ export function getWechaty (name?: string): Wechaty {
     ...vorpalPluginList,
   )
 
-  const wtmp = Wtmp.instance()
-  const loginWtmp = (user: Contact) => wtmp.login(user.name())
-  const logoutWtmp = (user: Contact) => wtmp.logout(user.name())
-  wechaty.on('login', loginWtmp)
-  wechaty.on('logout', logoutWtmp)
+  // const wtmp = Wtmp.instance()
+  // const loginWtmp = (user: Contact) => wtmp.login(user.name())
+  // const logoutWtmp = (user: Contact) => wtmp.logout(user.name())
+  // wechaty.on('login', loginWtmp)
+  // wechaty.on('logout', logoutWtmp)
 
   return wechaty
 }
