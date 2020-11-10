@@ -51,7 +51,7 @@ async function dingDong (
 
       const room = await wechaty.Room.find({ topic })
       if (room) {
-        const value = await room.qrcode()
+        const value = await room.qrCode()
         const qrCodeFileBox = await FileBox.fromQRCode(value)
         await message.say(qrCodeFileBox)
       } else {
