@@ -20,7 +20,7 @@ export default async function onScan (
  */
 function qrcodeValueToUrl (value: string): string {
   const qrcodeImageUrl = [
-    'https://wechaty.github.io/qrcode/',
+    'https://wechaty.js.org/qrcode/',
     encodeURIComponent(value),
   ].join('')
 
