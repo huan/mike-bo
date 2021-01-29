@@ -32,12 +32,12 @@
     "dotenv": "^8.2.0",
     "express": "^5.0.0-alpha.8",
     "finis": "^0.4.4",
-    "moment": "^2.27.0",
+    "moment": "^2.29.1",
     "read-pkg-up": "^7.0.1",
-    "wechaty": "^0.50.1",
-    "wechaty-plugin-contrib": "^0.14.12",
-    "wechaty-vorpal": "^0.6.11",
-    "wechaty-vorpal-contrib": "^0.6.49"
+    "wechaty": "^0.57.3",
+    "wechaty-plugin-contrib": "^0.14.15",
+    "wechaty-vorpal": "^0.6.12",
+    "wechaty-vorpal-contrib": "^0.6.51"
   },
   "devDependencies": {
     "@chatie/eslint-config": "^0.12.1",
@@ -45,7 +45,7 @@
     "@chatie/tsconfig": "^0.10.1",
     "@types/raven": "^2.5.3",
     "@types/read-pkg-up": "^6.0.0",
-    "@types/express": "^4.17.7",
+    "@types/express": "^4.17.11",
     "tstest": "^0.4.10"
   },
   "git": {
