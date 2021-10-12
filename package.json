@@ -40,7 +40,7 @@
     "wechaty-vorpal-contrib": "^0.6.51"
   },
   "devDependencies": {
-    "@chatie/eslint-config": "^0.12.1",
+    "@chatie/eslint-config": "^0.16.2",
     "@chatie/git-scripts": "^0.6.2",
     "@chatie/tsconfig": "^0.10.1",
     "@types/raven": "^2.5.3",
