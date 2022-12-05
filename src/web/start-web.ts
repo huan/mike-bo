@@ -9,7 +9,7 @@ import {
 import {
   PORT,
   VERSION,
-}             from '../config'
+}             from '../config.js'
 
 export async function startWeb (bot: Wechaty): Promise<void> {
   log.verbose('startWeb', 'startWeb(%s)', bot)
@@ -22,14 +22,7 @@ export async function startWeb (bot: Wechaty): Promise<void> {
     if (qrcodeValue) {
       html = [
         `<h1>Mike BO v${VERSION}</h1>`,
-        'Scan QR Code: <br />',
-        qrcodeValue + '<br />',
-        '<a href="http://goqr.me/" target="_blank">http://goqr.me/</a><br />',
-        '\n\n',
-        '<image src="',
-        'https://wechaty.github.io/qrcode/',
-        encodeURIComponent(qrcodeValue),
-        '">',
+        `<a href='https://wechaty.js.org/qrcode/${encodeURIComponent(qrcodeValue)}' target='_blank'>Click to scan QR Code to log in the bot</a>`,
       ].join('')
     } else if (userName) {
       html = `Mike BO v${VERSION} User ${userName} logined`

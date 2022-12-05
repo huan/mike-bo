@@ -1,5 +1,5 @@
-import { getWechaty } from './get-wechaty'
-import { chatops } from './chatops'
+import { getWechaty } from './get-wechaty.js'
+import { chatops } from './chatops.js'
 
 export {
   getWechaty,

@@ -1,5 +1,5 @@
-import * as dm    from './direct-message'
-import * as mike  from './chatops-mike'
+import * as dm    from './direct-message.js'
+import * as mike  from './chatops-mike.js'
 
 const vorpalPluginList = [
   ...Object.values(dm),

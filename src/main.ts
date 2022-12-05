@@ -1,18 +1,18 @@
-import './config' // load .env
+import './config.ts' // load .env
 
 import {
   log,
 }                    from 'wechaty'
 
-import { getWechaty } from './wechaty/mod'
-import { startWeb }   from './web/mod'
+import { getWechaty } from './wechaty/mod.js'
+import { startWeb }   from './web/mod.js'
 
-import { startFinis } from './setup-finis'
+import { startFinis } from './setup-finis.js'
 
 async function main () {
   log.verbose('main', 'main()')
 
-  const name = process.env.WECHATY_NAME || 'Mike BO'
+  const name = process.env['WECHATY_NAME'] || 'Mike BO'
 
   const bot = getWechaty(name)
 
@@ -20,8 +20,8 @@ async function main () {
   await startWeb(bot)
 
   await bot.start()
-  await bot.state.ready('off')
-
+  await bot.state.stable('inactive')
+  console.info('Bot State is set to "inactive"')
   return 0
 }
 

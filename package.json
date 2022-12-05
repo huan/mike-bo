@@ -1,17 +1,19 @@
 {
   "name": "mike-bo",
-  "version": "0.4.103",
+  "version": "0.5.0",
   "description": "Mike BO is an assistant bot work for Huan",
   "main": "index.js",
   "engines": {
-    "node": "10.4.1"
+    "node": ">=16",
+    "npm": ">=9"
   },
+  "type": "module",
   "scripts": {
     "build": "tsc",
     "dev": "WECHATY_PUPPET=wechaty-puppet-padplus ts-node src/main.ts",
     "lint": "npm run lint:es && npm run lint:ts",
     "lint:ts": "tsc --noEmit",
-    "start": "ts-node src/main.ts",
+    "start": "cross-env NODE_OPTIONS=\"--no-warnings --loader=ts-node/esm\" node src/main.ts",
     "test": "npm run lint && npm run test:unit",
     "test:smoke": "ts-node tests/fixtures/smoke-testing.ts",
     "test:unit": "blue-tape -r ts-node/register \"src/**/*.spec.ts\" \"src/*.spec.ts\" \"tests/*.spec.ts\" \"tests/**/*.spec.ts\"",
@@ -28,25 +30,25 @@
   },
   "homepage": "https://github.com/chatie/heroku-wechaty-getting-started#readme",
   "dependencies": {
-    "body-parser": "^1.19.0",
-    "dotenv": "^9.0.0",
-    "express": "^5.0.0-alpha.8",
-    "finis": "^0.4.4",
-    "moment": "^2.29.1",
-    "read-pkg-up": "^8.0.0",
-    "wechaty": "^0.60.7",
-    "wechaty-plugin-contrib": "^0.14.15",
-    "wechaty-vorpal": "^0.6.12",
-    "wechaty-vorpal-contrib": "^0.6.51"
+    "body-parser": "^1.20.1",
+    "dotenv": "^16.0.3",
+    "express": "^5.0.0-beta.1",
+    "finis": "^0.4.5",
+    "moment": "^2.29.4",
+    "read-pkg-up": "^9.1.0",
+    "wechaty": "^1.20.2",
+    "wechaty-plugin-contrib": "^1.11.2",
+    "wechaty-puppet-padlocal": "^1.20.1",
+    "wechaty-vorpal": "^1.0.5",
+    "wechaty-vorpal-contrib": "^1.11.5"
   },
   "devDependencies": {
-    "@chatie/eslint-config": "^0.12.1",
+    "@chatie/eslint-config": "^1.0.4",
     "@chatie/git-scripts": "^0.6.2",
-    "@chatie/tsconfig": "^0.10.1",
-    "@types/raven": "^2.5.3",
-    "@types/read-pkg-up": "^6.0.0",
-    "@types/express": "^4.17.11",
-    "tstest": "^0.4.10"
+    "@chatie/tsconfig": "^4.6.3",
+    "@types/express": "^4.17.14",
+    "@types/raven": "^2.5.4",
+    "tstest": "^1.2.8"
   },
   "git": {
     "scripts": {

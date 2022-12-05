@@ -1,4 +1,4 @@
-import { finis }    from 'finis'
+import finis    from 'finis'
 import {
   Wechaty,
   log,
@@ -6,10 +6,10 @@ import {
 
 import {
   chatops,
-}             from './wechaty/mod'
+}             from './wechaty/mod.js'
 import {
   VERSION,
-}             from './config'
+}             from './config.js'
 
 const BOT_NAME = 'Mike BO'
 
@@ -49,7 +49,7 @@ finis(async (code, signal) => {
   FINIS_QUITING = true
   log.info('Finis', 'finis(%s, %s)', code, signal)
 
-  if (bot.logonoff()) {
+  if (bot.isLoggedIn) {
     log.info('Finis', 'finis() announce exiting')
     try {
       // log.level('silly')
@@ -74,9 +74,7 @@ finis(async (code, signal) => {
 
   try {
     log.info('Finis', 'finis() setTimeout() going to exit with %d', code)
-    if (bot) {
-      await bot.stop()
-    }
+    await bot.stop()
   } catch (e) {
     log.error('Finis', 'finis() setTimeout() exception: %s', e)
   } finally {

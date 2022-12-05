@@ -2,6 +2,7 @@
   "extends": "@chatie/tsconfig",
   "compilerOptions": {
     "outDir": "dist",
+    "module": "NodeNext",
   },
   "exclude": [
     "node_modules/",

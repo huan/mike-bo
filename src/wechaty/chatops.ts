@@ -7,9 +7,9 @@ import {
   talkers,
 }               from 'wechaty-plugin-contrib'
 
-import { CHATOPS_ROOM_ID } from '../database'
+import { CHATOPS_ROOM_ID } from '../database.js'
 
-import { getWechaty } from '../wechaty/mod'
+import { getWechaty } from '../wechaty/mod.js'
 
 let room: Room
 

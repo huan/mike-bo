@@ -4,11 +4,11 @@ import {
   Wechaty,
 }                   from 'wechaty'
 
-import { chatops } from '../wechaty/mod'
+import { chatops } from '../wechaty/mod.js'
 
 export default async function onRoomInvite (
   this           : Wechaty,
-  roomInvitation : RoomInvitation
+  roomInvitation : RoomInvitation,
 ): Promise<void> {
   log.info('on-room-invite', 'onRoomInvite(%s)', roomInvitation)
 

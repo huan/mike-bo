@@ -2,8 +2,8 @@ import {
   log,
   Message,
   Wechaty,
-  FileBox,
 }             from 'wechaty'
+import { FileBox } from 'file-box'
 
 // import { Wtmp } from '../wtmp'
 
@@ -42,7 +42,7 @@ async function dingDong (
     console.info('mentionText', text)
   }
 
-  if (type === Message.Type.Text) {
+  if (type === wechaty.Message.Type.Text) {
     if (text.match(/^#ding$/i)) {
       await message.say('dong')
     } else if (text.match(/^#roomQRCode /i)) {
@@ -61,8 +61,8 @@ async function dingDong (
       const announcement = text.replace(/^#announce /i, '')
       log.info('on-message', 'dingDong() announce(%s)', announcement)
 
-      const room = wechaty.Room.load('5611663299@chatroom')
-      await room.announce(announcement)
+      // const room = wechaty.Room.load('5611663299@chatroom')
+      // await room.announce(announcement)
     } else if (text.match(/^#translate /i)) {
       const sentence = text.replace(/^#translate /i, '')
       log.info('on-message', 'dingDong() translate(%s)', sentence)
@@ -94,8 +94,8 @@ async function ctpTranslate (
   const CTP_TRANSLATE_ROOM_ID     = '19661094471@chatroom'  // Chat Transport Protocol - CTP
   const CTP_TRANSLATE_CONTACT_ID  = 'wxid_sxrxy0q048ad12'   // 彩云小译9号
 
-  const room      = wechaty.Room.load(CTP_TRANSLATE_ROOM_ID)
-  const ctpMaster = wechaty.Contact.load(CTP_TRANSLATE_CONTACT_ID)
+  const room      = (wechaty.Room as any).load(CTP_TRANSLATE_ROOM_ID)
+  const ctpMaster = (wechaty.Contact as any).load(CTP_TRANSLATE_CONTACT_ID)
 
   await room.ready()
   await ctpMaster.ready()

@@ -7,18 +7,21 @@
 /**
  * VERSION
  */
-import readPkgUp  from 'read-pkg-up'
+import { readPackageUpSync }  from 'read-pkg-up'
 import dotenv     from 'dotenv'
+import * as url from 'url'
 
 dotenv.config()
 
-const pkg = readPkgUp.sync({ cwd: __dirname })!.packageJson
+const __dirname = url.fileURLToPath(new URL('.', import.meta.url))
+
+const pkg = readPackageUpSync({ cwd: __dirname })!.packageJson
 const VERSION = pkg.version
 
 /**
  * Env Vars
  */
-const PORT = process.env.PORT || 8788
+const PORT = process.env['PORT'] || 8788
 
 export {
   PORT,

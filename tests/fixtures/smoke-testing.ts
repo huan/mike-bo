@@ -1,7 +1,7 @@
 #!/usr/bin/env ts-node
 
-import { getWechaty } from '../../src/get-wechaty'
-import { startWeb } from '../../src/start-web'
+import { getWechaty } from '../../src/get-wechaty.js'
+import { startWeb } from '../../src/start-web.js'
 
 async function main () {
   await startWeb(

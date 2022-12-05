@@ -1,18 +1,18 @@
 import {
-  Wechaty,
+  type Wechaty,
+  WechatyBuilder,
   log,
 }                 from 'wechaty'
 
-import { pluginList }       from '../plugins/mod'
-import { vorpalPluginList } from '../vorpals/mod'
+import { pluginList }       from '../plugins/mod.js'
+import { vorpalPluginList } from '../vorpals/mod.js'
+import { registerHandlers } from '../handlers/mod.js'
 
 // import { Wtmp }     from '../wtmp'
 
-import {
-  getMemory,
-}               from './get-memory'
+import { getMemory }        from './get-memory.js'
 
-let wechaty: Wechaty
+let wechaty: undefined | Wechaty
 
 export function getWechaty (name?: string): Wechaty {
   log.verbose('getWechaty', 'getWechaty(%s)', name || '')
@@ -26,10 +26,12 @@ export function getWechaty (name?: string): Wechaty {
   }
   const memory = getMemory(name)
 
-  wechaty = Wechaty.instance({
+  wechaty = WechatyBuilder.build({
     memory,
     name,
   })
+
+  registerHandlers(wechaty)
 
   wechaty.use(
     ...pluginList,

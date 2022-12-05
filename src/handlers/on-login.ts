@@ -7,7 +7,7 @@ import {
 
 import {
   VERSION as BOT_VERSION,
-}                               from '../config'
+}                               from '../config.js'
 
 export default async function onLogin (
   this : Wechaty,

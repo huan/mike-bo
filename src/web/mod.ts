@@ -1,4 +1,4 @@
-import { startWeb } from './start-web'
+import { startWeb } from './start-web.js'
 
 export {
   startWeb,

@@ -1,6 +1,6 @@
 import { Heartbeat } from 'wechaty-plugin-contrib'
 
-import { HEARTBEAT_ROOM_ID } from '../database'
+import { HEARTBEAT_ROOM_ID } from '../database.js'
 
 export const HeartbeatPlugin = Heartbeat({
   emoji: {
