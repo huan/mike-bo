@@ -30,6 +30,8 @@ export async function startWeb (bot: Wechaty): Promise<void> {
       html = `Mike BO v${VERSION} Hello, come back later please.`
     }
 
+    res.setHeader('content-type', 'text/html')
+
     res.end([
       html,
       '<hr />',
