@@ -18,7 +18,7 @@
  *
  */
 
-import test  from 'blue-tape'
+import { test }  from 'tstest'
 
 // import { log }  from '../src/config'
 

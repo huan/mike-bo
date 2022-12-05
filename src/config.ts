@@ -9,13 +9,12 @@
  */
 import { readPackageUpSync }  from 'read-pkg-up'
 import dotenv     from 'dotenv'
-import * as url from 'url'
 
 dotenv.config()
 
-const __dirname = url.fileURLToPath(new URL('.', import.meta.url))
+// const __dirname = url.fileURLToPath(new URL('.', import.meta.url))
 
-const pkg = readPackageUpSync({ cwd: __dirname })!.packageJson
+const pkg = readPackageUpSync()!.packageJson
 const VERSION = pkg.version
 
 /**
