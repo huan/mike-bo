@@ -22,15 +22,11 @@ async function dingDong (
 ) {
   log.info('on-message', 'dingDong()')
 
-  let text = message.text()
-  const type = message.type()
-  const room = message.room()
-  const from = message.from()
+  let text      = message.text()
+  const type    = message.type()
+  const room    = message.room()
+  const talker  = message.talker()
   const mentionSelf = await message.mentionSelf()
-
-  if (!from) {
-    return
-  }
 
   if (room) {
     if (!mentionSelf) {
@@ -72,7 +68,7 @@ async function dingDong (
         const output = `translate output: "${translated}"`
 
         if (room) {
-          await room.say(output, from)
+          await room.say(output, talker)
         } else {
           await message.say(output)
         }
@@ -105,12 +101,9 @@ async function ctpTranslate (
     const onCtpMessage = async (message: Message) => {
       log.verbose('on-message', 'ctpTranslate() onCtpMessage(%s)', message)
 
-      const from = message.from()
-      if (!from) {
-        return
-      }
+      const talker = message.talker()
 
-      if (from.id !== ctpMaster.id) {
+      if (talker.id !== ctpMaster.id) {
         return
       }
 
