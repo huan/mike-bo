@@ -4,8 +4,7 @@ import {
   Wechaty,
 }             from 'wechaty'
 import { FileBox } from 'file-box'
-
-// import { Wtmp } from '../wtmp'
+import { onMessage as onChatGptMessage } from '../chatgpt/mod.js'
 
 export default async function onMessage (
   this    : Wechaty,
@@ -14,6 +13,8 @@ export default async function onMessage (
   log.info('on-message', 'onMessage(%s)', message)
 
   await dingDong(this, message)
+
+  await onChatGptMessage.call(this, message)
 }
 
 async function dingDong (
