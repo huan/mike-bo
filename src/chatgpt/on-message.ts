@@ -7,8 +7,8 @@ export async function onMessage (this: Wechaty, message: Message): Promise<void>
   const room = message.room()
   if (!room) return
 
-  const topic = await room.topic()
-  if (!/ChatGPT/.test(topic)) return
+  // const topic = await room.topic()
+  // if (!/ChatGPT/.test(topic)) return
 
   if (!(await message.mentionSelf())) return
 
@@ -18,12 +18,13 @@ export async function onMessage (this: Wechaty, message: Message): Promise<void>
   const text = await message.mentionText()
 
   // send a message and wait for the response
-  const response = await chatGptApi.sendMessage(text)
+  const response = await chatGptApi.ask(text)
 
-  // response is a markdown-formatted string
-  if (response) {
-    await room.say(response)
-  } else {
-    await room.say('No response')
-  }
+  const fullText = [
+    message.talker().name() + ': ' + text,
+    '-----',
+    'ChatGPT: ' + response || 'No response',
+  ].join('\n')
+
+  await room.say(fullText)
 }
