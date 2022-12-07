@@ -10,7 +10,7 @@ const credits = {} as Record<string, number>
 
 export async function onMessage (this: Wechaty, message: Message): Promise<void> {
   const room = message.room()
-  if (!room) return
+  // if (!room) return
 
   // const topic = await room.topic()
   // if (!/ChatGPT/.test(topic)) return
@@ -26,13 +26,20 @@ export async function onMessage (this: Wechaty, message: Message): Promise<void>
     return
   }
 
-  if (!(await message.mentionSelf())) return
+  if (room && !(await message.mentionSelf())) return
 
   /**
    * Check freemium
    */
-  if (credit <= 0 - DEFAULT_CREDIT) {
-    await room.say(MAX_PREMIUM_NUM_NOTICE, talker)
+  const admins = [
+    'lizhuohuan',
+    'qunaer001',
+  ]
+  if (!admins.includes(talker.id) && credit <= 0 - DEFAULT_CREDIT) {
+    await (room
+      ? room.say(MAX_PREMIUM_NUM_NOTICE, talker)
+      : message.say(MAX_PREMIUM_NUM_NOTICE)
+    )
     return
   }
   credits[talker.id] = credit - 1
@@ -51,5 +58,5 @@ export async function onMessage (this: Wechaty, message: Message): Promise<void>
     'ChatGPT: ' + response || 'No response',
   ].join('\n')
 
-  await room.say(fullText)
+  await message.say(fullText)
 }

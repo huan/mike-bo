@@ -35,7 +35,7 @@ export async function ChatGPTAPIBuilder () {
       const api = apiPool[currentIndex]
       const response = await Promise.any([
         api!.sendMessage(question),
-        new Promise<string>(resolve => setTimeout(() => resolve(`API timeout at token[${currentIndex}]`), 1000 * 60)),
+        new Promise<string>(resolve => setTimeout(() => resolve(`API timeout at token[${currentIndex}]`), 1000 * 60 * 3)),
       ])
       console.info(`ChatGPTAPIBuilder() index[${sessionTokenIndex}] response:`, response)
       return response + `(token[${currentIndex}])])`
